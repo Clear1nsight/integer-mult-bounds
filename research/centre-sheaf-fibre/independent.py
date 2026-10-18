@@ -232,7 +232,10 @@ def main():
     parser.add_argument('--root',type=Path,default=ROOT)
     args=parser.parse_args()
     if args.geometry:
-        raw=json.loads(args.geometry.read_bytes())
+        content=args.geometry.read_bytes()
+        raw=json.loads(gzip.decompress(content) if args.geometry.suffix=='.gz' else content)
+        need(digest(raw)=='79515573d8231a59ece664a2ec421983989c9925e1ccab1ca4c71c7cfa3ea2be',
+             'pinned derived geometry')
         rows=[[Fraction(x) for x in row] for row in raw['rows']]
         routes=[transpose(tuple(row)) for row in raw['routes']]
         mode='derived geometry only; archive not read'

@@ -6,12 +6,15 @@ import argparse
 from fractions import Fraction as Q
 from hashlib import sha256
 import json
+import gzip
+import io
 from pathlib import Path
 import sys
 import types
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+GEOMETRY_SHA = "79515573d8231a59ece664a2ec421983989c9925e1ccab1ca4c71c7cfa3ea2be"
 PINS = {
     "research/centre-block-repair-information/independent.py":
         "b298ff3902c14db11e4ed057259785efc185e8ae3bb39c0d1c432e2340ceb4ea",
@@ -54,35 +57,89 @@ def geometry(root: Path = ROOT):
     return rows, [tuple(route[:17]) for route in routes]
 
 
+def unique(pairs):
+    out = {}
+    for key, value in pairs:
+        if key in out:
+            raise ValueError("duplicate JSON key: " + key)
+        out[key] = value
+    return out
+
+
+def strict_equal(actual, expected, at="receipt"):
+    if type(actual) is not type(expected):
+        raise ValueError("receipt type mismatch: " + at)
+    if isinstance(actual, dict):
+        if actual.keys() != expected.keys():
+            raise ValueError("receipt keys mismatch: " + at)
+        for key in actual:
+            strict_equal(actual[key], expected[key], at + "." + key)
+    elif isinstance(actual, list):
+        if len(actual) != len(expected):
+            raise ValueError("receipt length mismatch: " + at)
+        for i, value in enumerate(actual):
+            strict_equal(value, expected[i], at + "[" + str(i) + "]")
+    elif actual != expected:
+        raise ValueError("receipt value mismatch: " + at)
+
+
+def parsed_geometry(path):
+    if not path.is_file() or path.is_symlink() or path.stat().st_size > 100000:
+        raise ValueError("missing, aliased or oversized geometry")
+    content = path.read_bytes()
+    if path.suffix == ".gz":
+        with gzip.GzipFile(fileobj=io.BytesIO(content)) as stream:
+            content = stream.read(100001)
+        if len(content) > 100000:
+            raise ValueError("oversized expanded geometry")
+    raw = json.loads(content, object_pairs_hook=unique)
+    if set(raw) != {"rows", "routes"}:
+        raise ValueError("geometry keys")
+    if len(raw["rows"]) != 8 or any(len(row) != 112 for row in raw["rows"]):
+        raise ValueError("geometry row dimensions")
+    if any(type(x) is not str or str(Q(x)) != x for row in raw["rows"] for x in row):
+        raise ValueError("canonical rational geometry")
+    if len(raw["routes"]) != 112 or any(len(row) != 17 for row in raw["routes"]):
+        raise ValueError("geometry route dimensions")
+    if any(type(x) is not int or not 0 <= x < (1 << 17) for row in raw["routes"] for x in row):
+        raise ValueError("integer geometry")
+    engine = local_module("geometry_digest_engine", "sheaf.py")
+    if engine.digest(raw) != GEOMETRY_SHA:
+        raise ValueError("derived geometry SHA256 mismatch")
+    return [[Q(x) for x in row] for row in raw["rows"]], [tuple(row) for row in raw["routes"]]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--emit-geometry", action="store_true", help="Print authenticated derived geometry for offline verification")
-    parser.add_argument("--geometry", type=Path, help="Use an explicitly labelled derived geometry export rather than re-read the source archive")
+    parser.add_argument("--emit-geometry", action="store_true")
+    parser.add_argument("--geometry", type=Path, help="Check a pinned derived export; this does not rerun archive extraction")
     parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--write-receipt", type=Path, help="Create a new receipt exclusively; never overwrite")
     args = parser.parse_args()
     engine = local_module("centre_sheaf_engine", "sheaf.py")
+    exported_rows, exported_routes = parsed_geometry(HERE / "GEOMETRY.json.gz")
     if args.geometry:
-        raw = json.loads(args.geometry.read_text())
-        rows = [[Q(x) for x in row] for row in raw["rows"]]
-        routes = [tuple(row) for row in raw["routes"]]
-        source_mode = "derived geometry only; archive extraction not rerun"
+        rows, routes = parsed_geometry(args.geometry)
+        source_mode = "pinned derived geometry; archive extraction not rerun"
     else:
         rows, routes = geometry(args.root)
         source_mode = "authenticated archive and credited PR3071 extractor"
+    engine.need(rows == exported_rows and routes == exported_routes, "source/export geometry disagreement")
+    engine.need(all(x.denominator == 1 for row in rows for x in row), "integral query matrix")
     if args.emit_geometry:
         print("GEOMETRY_JSON=" + json.dumps({"rows": [[str(x) for x in row] for row in rows], "routes": routes}, separators=(",", ":")))
-    # Print finite diagnostic before the stronger assertion, so a failed model
-    # reduction remains a reproducible result rather than a silent truncation.
-    a, b, c = 0, 6, 85
-    group = engine.closure([engine.compose(routes[a], routes[b]), engine.compose(routes[a], routes[c])])
-    blocks = engine.coset_classes(routes, set(group))
-    diagnostic = [{"ports": block, "rank": engine.rank([[row[p] for p in block] for row in rows])} for block in blocks]
-    print("COSET_DIAGNOSTIC=" + json.dumps(diagnostic, separators=(",", ":")))
     result = engine.analyse(rows, routes)
-    engine.need(result["owners"] == 4080, "pinned subgroup order differs from 4080")
-    result["source_mode"] = source_mode
-    print("RESULT_JSON=" + json.dumps(result, sort_keys=True, separators=(",", ":")))
-    print("PASS_CENTRE_SHEAF_FIBRE owners=4080 all_ports=112 kernel=1 integer_generator_owners=4080 no_new_kappa")
+    engine.need(result["owners"] == 4080 and result["ports"] == 112, "source block dimensions")
+    if args.write_receipt:
+        with args.write_receipt.open("x", encoding="utf-8") as stream:
+            json.dump(result, stream, sort_keys=True, indent=2)
+            stream.write("\n")
+    else:
+        expected = json.loads((HERE / "RESULT.json").read_bytes(), object_pairs_hook=unique)
+        strict_equal(result, expected)
+    print("RESULT_SHA256=" + engine.digest(result))
+    print("SOURCE_MODE=" + source_mode)
+    print("PASS_CENTRE_SHEAF_FIBRE owners=4080 ports=112 kernel=1 required_observations=424319 no_new_kappa")
 
 
 if __name__ == "__main__":

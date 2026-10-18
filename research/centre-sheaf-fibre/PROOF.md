@@ -1,99 +1,180 @@
 # Local-to-global reduction for a fixed subgroup block
 
-A general exact lemma, followed by a finite application that must be checked.
-All observations are scalar maps over Q. The same conclusions hold over
-characteristic-zero extensions. No physical caller or recursive cost is proved.
+This proof separates a general exact lemma from its source-bound finite
+application, checked by two separately implemented archive reconstructions. All observations are scalar linear maps over Q. Extending
+to characteristic-zero fields follows by the same rank certificates. Neither
+statement prices a native recursive operation or constructs a physical caller.
 
-## Coset elimination
+## 1. Model and coset elimination
 
-Let G contain involutions rho_p and a finite subgroup H. Let r_p be the columns
-of a full-row-rank d-by-n rational matrix R. Arrays x(g,p) are supported on H
-and extended by zero outside H. Set
+Let G be a group with involutions rho_p, and let H be a finite subgroup.
+Let r_p be columns of a rational matrix R of full row rank d. An array x is
+supported on owners H, with one scalar x(g,p) per port and zero outside H.
+Write
 
     Sx(g) = sum_p r_p x(g,p),
     4Tx(z) = sum_p r_p x(z rho_p,p).
 
-Partition ports by H rho_p=H rho_q, equivalent to rho_p rho_q in H. For a class
-C and an output z in its coset, only C contributes. If R_C has independent
-columns, Tx(z)=0 forces each incoming coordinate to zero. Every source/port
-coordinate appears at z=g rho_p, so all coordinates in such classes vanish.
+Partition ports by H rho_p = H rho_q, equivalently rho_p rho_q in H. For a
+class C and z in H rho_p, exactly the coordinates with ports in C contribute
+to Tx(z). If the columns R_C are independent, Tx(z)=0 forces each incoming
+coordinate to vanish. Each x(g,p) appears at z=g rho_p, so every coordinate
+belonging to such a class vanishes in the joint kernel.
 
-Suppose the only deficient class is P={a,b,c}, rank two, with the unique
-relation r_a-r_b-r_c=0. The source equations force
+Suppose the only non-independent class is P={a,b,c}, with rank two and unique
+relation r_a-r_b-r_c=0. The source equations then force
 
-    x(g,a)=alpha(g), x(g,b)=x(g,c)=-alpha(g).
+    x(g,a)=alpha(g),  x(g,b)=x(g,c)=-alpha(g).
 
-At z=g rho_a, the later equation is
+At z=g rho_a, the later equation becomes
 
-    r_a alpha(g)-r_b alpha(g rho_a rho_b)-r_c alpha(g rho_a rho_c)=0.
+    r_a alpha(g) - r_b alpha(g rho_a rho_b)
+                  - r_c alpha(g rho_a rho_c) = 0.
 
-Independence of r_b,r_c forces equality of these three amplitudes. If the two
-even route products generate H, alpha is constant. Conversely every constant
-works. Hence the full common kernel is Qv, where v equals(1,-1,-1) on P at
-every owner of H and is zero on all other ports. This uses every port; absence
-of other individual routes from a larger group cannot replace the coset test.
+As r_b and r_c are independent, alpha is invariant under right multiplication
+by rho_a rho_b and rho_a rho_c. If those generators generate H, alpha is
+constant. Conversely, a constant alpha satisfies every equation. Thus the
+full joint kernel is exactly the one-dimensional span of v, where v has
+values (1,-1,-1) on P at every owner of H and is zero on other ports.
 
-## Cellular sheaf
+This proof uses every port. No absence of other individual routes from the
+larger group can substitute for checking all output-coset column ranks.
 
-Use the bipartite graph of source owners and touched output owners. Source
-vertex stalks are ker R; an output vertex for class C has stalk ker R_C. Each
-port edge has stalk Q, with restriction maps given by the corresponding source
-and output coordinates. Global sections are exactly ker S intersect ker T.
-Independent output stalks vanish and eliminate their incident coordinates.
-Remaining triple stalks have dimension one. Normalising by their nonzero
-coefficients makes every edge restriction equality. Connectivity therefore
-gives a one-dimensional global-section space. No higher-cohomology assertion
-about the unreduced sheaf is needed.
+## 2. Cellular sheaf interpretation
 
-## Information and proper subblocks
+Make a bipartite graph of source owners H and touched output owners. Each
+source vertex has stalk ker R. Each output vertex in the coset for C has
+stalk ker R_C. Each source/port edge has scalar stalk Q and restriction maps
+that read its source coordinate and corresponding incoming output coordinate.
+Global sections are exactly ker S intersect ker T, since agreeing edge values
+glue the two local zero-observation conditions.
 
-S has rank dh. Thus rank(T restricted to ker S)=(n-d)h-1. If linear additional
-observations L permit recovery of T from(S,L), even by a nonlinear decoder,
-then ker S intersect ker L is contained in ker T. Consequently L needs at
-least(n-d)h-1 scalar coordinates; a linear quotient attains this abstractly.
-This does not give a native programme or tariff.
+Independent output stalks are zero and eliminate their edges. The remaining
+triple has a one-dimensional stalk at each source and output vertex. After
+normalising by the nonzero coefficients (1,-1,-1), edge compatibility is
+ordinary equality. The resulting graph is connected precisely when the two
+even route products generate H. Its global sections therefore have dimension
+one. No statement about the first cohomology of the unreduced sheaf is needed.
 
-Any kernel vector on a proper B subset H extends by zero to H, hence is a
-multiple of v. Because v is nonzero at every owner, that multiple must be
-zero. The proper-subblock requirement is therefore(n-d)|B|. Left translates
-of H have the same result, but arbitrary equally sized owner sets do not
-follow from it.
+This is the sheaf method's computational benefit here. It replaces a large
+routed matrix with small coset ranks and a graph-connectivity certificate.
 
-## Primitive integer fibres
+## 3. Information consequence and proper subblocks
 
-When R is integral, stack S and4T into an integer matrix A. Since v has an
-entry one, ker_Z A=Zv. A nonempty nonnegative integer fibre equals
+With n ports and h owners, S has rank dh. The map T restricted to ker S has
+rank (n-d)h-1. Any additional linear observation L that, together with S,
+permits recovery of T even through an arbitrary nonlinear decoder must have
+rank at least (n-d)h-1. Otherwise L has a kernel on ker S that is not killed
+by T. Two inputs would have equal observed data and unequal required outputs.
+A suitable linear quotient attains this dimension abstractly. More explicitly,
+choose d pivot columns of R at each owner. Given S, the other (n-d)h entries
+are free coordinates z. The restricted vector v has a nonzero entry v_j=+1
+or -1 among these coordinates. Read z_i-(v_i/v_j)z_j for every i other than j.
+Together with S, these (n-d)h-1 linear observations determine the class modulo
+v and therefore determine T. These globally coupled differences are not free
+local reads or an implementation-cost certificate.
 
-    {n0+t v: t integer, lower<=t<=upper},
-    lower=max_{v_i=1}(-n0_i), upper=min_{v_i=-1}(n0_i).
+A joint-kernel vector supported on a proper subset B of H extends by zero to
+H and must be a multiple of v. Since v is nonzero at every owner, that multiple
+is zero. Thus every proper B has joint kernel zero and extra linear-observation
+requirement (n-d)|B|. The result applies to these subblocks and their left
+translates, not arbitrary owner sets of the same size.
 
-The single primitive move v in either direction connects every such fibre.
-The associated toric ideal is generated by the binomial for v-positive and
-v-negative. This is a coefficient-fibre statement, not an operation-scheduling
-model. In particular sum(v)=-h, so imposing a fixed total-count row kills the
-kernel. Extra resource invariants cannot be silently discarded.
+## 4. Primitive integer fibres
 
-## Proposed finite application
+Assume R is integral, as both source reconstructions check in the application. Let A stack S
+and 4T. The rational kernel is Qv and v has a coordinate equal to one, so
+ker_Z A=Zv. Every nonempty nonnegative integer fibre is
 
-PR3071/3147/3656 give n=112,d=8,h=4080. If the full coset certificate passes,
-there are456960 variables, old rank32640, common kernel dimension one, and
-424319 additional linear observations are necessary and sufficient abstractly.
-The move has4080 positive and8160 negative entries. Source-dependent execution
-is pending in this draft. Physical phases, payload covariance, acquisition,
-chronology, dirty restoration, precision, hosting and a favourable complete
-supplier bill remain outside this scalar theorem.
+    {n0 + t v : t integer, lower <= t <= upper},
+    lower = max_{v_i=1} (-n0_i),
+    upper = min_{v_i=-1} n0_i.
+
+Consequently the single primitive move v, allowed in both directions, connects
+every nonnegative fibre. Its toric ideal is generated by the binomial with
+exponent vectors v-positive and v-negative. This is a rank-one integer-fibre
+result, not a synthesis of legal instructions or a homogeneous scheduling move.
+Indeed, sum(v)=-h, so adding a fixed total-count row makes the integer kernel
+zero. Positivity and extra resource invariants cannot be silently omitted.
+
+## 5. Executed finite application and exact scope
+
+For the source model of PR3071/3147/3656, n=112, d=8, and h=4080. The
+source subgroup is generated by rho_0 rho_6 and rho_0 rho_85. All 112 ports
+are allowed to vary. The complete output partition has 109 singleton classes
+and one rank-two class {0,6,85}. The singleton columns are nonzero, and the
+only relation in the triple is (1,-1,-1). The reduced graph has 4080 vertices,
+8160 undirected edges, and a spanning tree with 4079 edges. Thus all the
+hypotheses of Sections 1-4 are verified, not assumed from the old witness.
+
+There are 456960 scalar variables. S has rank 32640 and kernel dimension
+424320. The full joint kernel has dimension one, so the exact additional
+linear-observation minimum is 424319. Every proper subset of this H, and of
+a left translate, still requires 104 observations per owner. This does not
+settle the global minimum support among arbitrary owner sets. In particular,
+it does not improve the general 15-owner lower bound to 4080.
+
+The primitive integer move has 4080 positive and 8160 negative entries. It
+touches all 4080 owners. Its two monomials have total degrees 4080 and 8160,
+so it is nonhomogeneous for ordinary total count. A fixed count constraint
+removes the move. This is a precise coefficient-fibre statement, not a free
+resource exchange and not an operation-scheduling Markov basis.
+
+### Source-model assumptions
+
+The inherited first-call constant-source endpoint identifies initial D_p and
+T_p differences for the later-query calculation. Under that source slice the
+later rows are R/4. Both reconstructions check the ordered canonical scalar
+program and this equality; neither enlarges it to arbitrary helper dirt or
+full physical payload semantics. The binary routes act on a 17-dimensional
+active block of the actual 73-dimensional owner space and fix the spectators.
+
+This theorem concerns S and T as declared here. Native phases, payload
+covariance, source acquisition, chronology, dirty-state restoration, precision,
+hosting, and a favourable complete supplier invoice are not discharged. It
+establishes no new kappa. The known witness remains credited to PR3656; the
+new result is its uniqueness on the whole 112-port block and its consequences.
+
+## 6. Reproducible finite certificates
+
+The primary implementation reuses PR3071's authenticated extractor unchanged,
+then uses column-matrix products, right multiplication, exact rational ranks,
+and a breadth-first compatibility tree. The second imports no primary or
+predecessor executable. It parses the same archive separately, propagates
+sparse coefficient rows forwards, builds binary row matrices, enumerates the
+group by left multiplication with a different generating pair, and uses
+modulo-101 minors plus the exact triple relation. A nonzero modular minor is
+a rational rank lower certificate; the exact relation gives the upper bound.
+It checks every routed residual of the witness and the three nonzero outputs
+caused by removing one owner, then checks connectivity with union-find.
+
+Both actual-archive implementations passed normally and with -O in the fork's
+registered Python 3.12.15 workflow at 403ef45de40e41baaf8b1f4cfddaf3ba1d57af1c.
+The eight generic tests include a separately assembled small full matrix,
+every proper owner subset, and all 512 binary nonnegative points. They check
+consequences rather than merely repeating stored ranks. Behavioural controls
+also exercise source drift, duplicate keys, type substitutions, missing inputs,
+exclusive receipt creation, and an erased independent output column.
+
+GEOMETRY.json.gz is a compact derived export, not an original source archive.
+Default execution reconstructs it from pinned source bytes and compares all
+rows and routes before computing the certificate. An explicit --geometry run
+checks the frozen derived data without redoing source extraction. RESULT.json
+is compared with strict types. Compression bytes are not the mathematical
+comparison. The parsed geometry hash is
+79515573d8231a59ece664a2ec421983989c9925e1ccab1ca4c71c7cfa3ea2be.
 
 ## References and credit
 
-Hansen and Ghrist, Toward a spectral theory of cellular sheaves, Journal of
-Applied and Computational Topology3 (2019),315-358, DOI10.1007/s41468-019-00038-7.
-Diaconis and Sturmfels, Algebraic algorithms for sampling from conditional
-distributions, Annals of Statistics26(1) (1998),363-397, DOI10.1214/aos/1030563990.
-These established theories motivate the formulation; they do not prove the
-source-specific premises.
+The construction of sheaf global sections from local restriction equations is
+standard. See Hansen and Ghrist, Toward a spectral theory of cellular sheaves,
+Journal of Applied and Computational Topology 3 (2019), 315-358, DOI 10.1007/s41468-019-00038-7.
+The Markov-basis/fibre connection is due to Diaconis and Sturmfels, Algebraic
+algorithms for sampling from conditional distributions, Annals of Statistics
+26(1), 1998, DOI 10.1214/aos/1030563990. These references motivate the method,
+not the source-specific conclusion.
 
-Credit Matarener/3656 for the4080-owner subgroup and witness, dcharb78/3147 for
-the programme, Ross Richardson/3071 for the observation model and extractor,
-Sagar Thakrar/3291 and Sudarsh Chaturvedi/3168 for the corrected graph/census
-lineage, and all selected source notices. Clear1nsight with substantial OpenAI
-assistance; Apache-2.0. No separate human or formal-kernel acceptance claimed.
+Matarener's PR3656 retains priority for the 4080-owner subgroup and witness;
+dcharb78/PR3147 for the programme; Ross Richardson's PR3071 for the observation model
+and source extractor; PR3291 and PR3168 for the corrected graph/census lineage.
+The full selected source notices remain in the unchanged repository.
