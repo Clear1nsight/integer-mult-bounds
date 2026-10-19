@@ -1,0 +1,60 @@
+name: P104 residual consumer exact-head validation
+on:
+  push:
+    branches: [validation/p104-residual-consumer-exact]
+permissions:
+  contents: read
+jobs:
+  source-bound:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_NO_REPLACE_OBJECTS: '1'
+    steps:
+      - name: Check out the exact scientific head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 96cce7bcd5dea37298383414a7191f6c11441929
+          fetch-depth: 0
+          persist-credentials: false
+          sparse-checkout: |
+            research/p104-residual-consumer
+            research/p104-native-channel/inputs
+            scripts
+            docs/research
+            certificates
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Canonical checkpoint and initial inventory
+        run: |
+          test "$(git rev-parse HEAD)" = 96cce7bcd5dea37298383414a7191f6c11441929
+          git fetch --no-tags --filter=blob:none https://github.com/CrocSwap/integer-mult-bounds.git main
+          echo "CANONICAL_MAIN=$(git rev-parse FETCH_HEAD)"
+          for p in AGENTS.md autoresearch.md CONTRIBUTING.md docs/research/current-priorities.md docs/research/agent-task-catalog.json certificates/selected-result.json; do
+            echo "GUIDE $p $(git rev-parse FETCH_HEAD:$p)"
+          done
+          find research/p104-residual-consumer -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/p104-inventory.txt
+          cat /tmp/p104-inventory.txt
+      - name: Registered metadata and all four scientific checks
+        run: |
+          python -B scripts/research_package.py --package research/p104-residual-consumer --check-only
+          python -B scripts/research_package.py --package research/p104-residual-consumer
+          python -B scripts/check_research_commit.py --package research/p104-residual-consumer --check-source-history
+      - name: Bounded sparse offline overlap helper
+        run: |
+          python -B scripts/find_overlap.py --task p104-side-correction --offline --json > /tmp/p104-overlap.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/p104-overlap.json'))
+          print('OFFLINE_OVERLAP_KEYS',list(d))
+          for k in ('coverage','warnings','freshness','query','task_id'):
+              if k in d: print(k,json.dumps(d[k])[:10000])
+          print('Sparse offline scan is supplementary; no complete live or historical coverage is claimed.')
+          PY
+      - name: Preserve all committed inputs
+        run: |
+          sha256sum --check /tmp/p104-inventory.txt
+          git diff --exit-code
+          test "$(find research/p104-residual-consumer -type f | wc -l)" = 11
