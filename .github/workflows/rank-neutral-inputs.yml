@@ -1,0 +1,62 @@
+name: Neutral-first pinned input export
+on:
+  push:
+    branches: [scratch/rank-neutral-inputs-20261019]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Acquire pinned public research sources
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, pathlib, urllib.request
+          out=pathlib.Path('export'); out.mkdir()
+          pins=[('CrocSwap','20ecf2891d80b5acf18d980b2164fb44ea7faa90','',[
+            'AGENTS.md','autoresearch.md','CONTRIBUTING.md','certificates/selected-result.json',
+            'docs/research/current-priorities.md','docs/research/research-family-status.md',
+            'docs/research/agent-procedure.md','docs/research/agent-task-catalog.json',
+            'docs/research/research-package-guide.md','docs/research/contribution-review.md',
+            'docs/research/pr-ledger.md','scripts/find_overlap.py','scripts/research_package.py',
+            'scripts/choose_research_task.py']),
+            ('Clear1nsight','359fe0fe77d29544972fd22ee674085ed5a3b4d0',
+             'research/rank-profile-retiming-obstruction/',[
+              'README.md','PROOF.md','SOURCES.json','TASK.json','CENSUS.json','VERIFY.json',
+              'VALIDATION.json','retiming.py','verify.py','vendor/audit_core.py',
+              'vendor/audit_verify.py','vendor/SOURCE-CREDITS.md',
+              'inputs/BORROW-WORD-43base.json.gz','inputs/BORROW-WORD-43extra.json.gz','inputs/PROFILE.json'])]
+          rows=[]
+          for owner,head,prefix,paths in pins:
+            for name in paths:
+              path=prefix+name
+              data=urllib.request.urlopen(f'https://raw.githubusercontent.com/{owner}/integer-mult-bounds/{head}/{path}',timeout=30).read()
+              target=out/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
+              rows.append(dict(owner=owner,head=head,path=path,sha256=hashlib.sha256(data).hexdigest(),git_blob=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()))
+          (out/'ACQUISITION.json').write_text(json.dumps(rows,indent=2)+'\n')
+          PY
+      - name: Fetch canonical main checkpoint without checkout
+        shell: bash
+        run: |
+          mkdir checkpoint && cd checkpoint
+          git init -q
+          git fetch --no-tags --depth=1 --filter=blob:none https://github.com/CrocSwap/integer-mult-bounds.git main
+          git rev-parse FETCH_HEAD > ../export/MAIN-CHECKPOINT.txt
+          date -u +%Y-%m-%dT%H:%M:%SZ >> ../export/MAIN-CHECKPOINT.txt
+      - name: Refresh repository overlap helper
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          cd export
+          timeout 240 python3 -B scripts/find_overlap.py --task scalar-to-moment --refresh --cache "$RUNNER_TEMP/rank-overlap.json" --json > OVERLAP.json 2> OVERLAP.stderr
+          cp "$RUNNER_TEMP/rank-overlap.json" OVERLAP-CACHE.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: rank-neutral-inputs
+          path: export/
+          retention-days: 3
