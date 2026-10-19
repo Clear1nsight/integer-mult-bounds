@@ -1,0 +1,51 @@
+name: Admission audit immutable source export
+on:
+  push:
+    branches: ['audit/staged544-r437-admission-20261019']
+    paths: ['.github/workflows/admission-source-export.yml']
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ai-nanachi/integer-mult-bounds
+          ref: a24f9ff95c12fd0b6792e3f710569237efd72db2
+          path: current
+          sparse-checkout: research/bit-p111-r437-gl464-470-20261018
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ai-nanachi/integer-mult-bounds
+          ref: 36ff441479ff9c7e70d83f0becccd44da50effb8
+          path: previous
+          sparse-checkout: research/bit-p111-r437-gl464-470-20261018
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: thakrarsagar/integer-mult-bounds
+          ref: aa0bd9fbc8700506b1fafcc55bca9bd32aced7d9
+          path: independent
+          sparse-checkout: research/r437-composed-bit-independent-audit
+          persist-credentials: false
+      - name: Bind immutable exported bytes
+        run: |
+          mkdir -p receipts
+          for dir in current previous independent; do
+            git -C "$dir" rev-parse HEAD > "receipts/$dir-head.txt"
+            git -C "$dir" ls-tree -r HEAD -- research > "receipts/$dir-git-tree.txt"
+            (cd "$dir"; find research -type f -print0 | sort -z | xargs -0 sha256sum) > "receipts/$dir-sha256.txt"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: immutable-r437-snapshots
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            receipts/
+            current/research/bit-p111-r437-gl464-470-20261018/
+            previous/research/bit-p111-r437-gl464-470-20261018/
+            independent/research/r437-composed-bit-independent-audit/
