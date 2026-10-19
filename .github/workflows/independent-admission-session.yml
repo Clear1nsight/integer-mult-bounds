@@ -12,9 +12,12 @@ jobs:
   exact-head-replay:
     if: contains(github.event.head_commit.message, '[run-admission-audit]')
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    # 26m19s prior release, with measured stages about 1.7x slower here.
+    # Leave time beyond the 60m command cap for setup and evidence upload.
+    timeout-minutes: 75
     env:
       PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUNBUFFERED: '1'
       PYTHONINTMAXSTRDIGITS: '0'
       OPENBLAS_NUM_THREADS: '1'
       OMP_NUM_THREADS: '1'
@@ -51,6 +54,9 @@ jobs:
           test "$(git -C prior-audit rev-parse HEAD)" = aa0bd9fbc8700506b1fafcc55bca9bd32aced7d9
           python -VV > evidence/python.txt
           uname -a > evidence/platform.txt
+          lscpu > evidence/cpu.txt
+          free -m > evidence/memory-before.txt
+          df -h > evidence/disk-before.txt
           python -m pip install numpy==2.2.6 scipy==1.15.3 sympy==1.14.0 mpmath==1.3.0 > evidence/dependencies.log 2>&1
           python -m pip freeze > evidence/pip-freeze.txt
           for dir in r437 staged prior-audit; do
@@ -59,13 +65,51 @@ jobs:
       - name: Run the current R437 published cold entry point
         run: |
           set +e
-          timeout 240s python -B r437/research/bit-p111-r437-gl464-470-20261018/verify.py > evidence/r437.log 2>&1
-          echo "$?" > evidence/r437-exit-code.txt
+          echo "$(date -u +%FT%TZ) starting R437 (240s command budget)"
+          /usr/bin/time -v -o evidence/r437-resources.txt timeout --kill-after=30s 240s python -B r437/research/bit-p111-r437-gl464-470-20261018/verify.py > evidence/r437.log 2>&1
+          result=$?
+          echo "$result" > evidence/r437-exit-code.txt
+          echo "$(date -u +%FT%TZ) R437 finished with exit $result"
+          tail -n 20 evidence/r437.log
+          cat evidence/r437-resources.txt
       - name: Run the T385 complete release wrapper with declared native reuse
         run: |
           set +e
-          timeout 780s python -B staged/research/staged544-t385/full_replay.py --work "$RUNNER_TEMP/t385-admission" --jobs 1 > evidence/t385.log 2>&1
-          echo "$?" > evidence/t385-exit-code.txt
+          echo "$(date -u +%FT%TZ) starting T385 (3600s command budget)"
+          /usr/bin/time -v -o evidence/t385-resources.txt timeout --kill-after=30s 3600s python -B staged/research/staged544-t385/full_replay.py --work "$RUNNER_TEMP/t385-admission" --jobs 1 > evidence/t385.log 2>&1 &
+          replay_pid=$!
+          (
+            sleep_pid=
+            trap 'test -z "$sleep_pid" || kill "$sleep_pid" 2>/dev/null; exit 0' TERM INT
+            while kill -0 "$replay_pid" 2>/dev/null; do
+              {
+                echo "=== $(date -u +%FT%TZ) T385 progress ==="
+                # Per-process CPU time, CPU%, memory%, RSS/VSZ (KiB).
+                ps -eo pid,ppid,etimes,time,pcpu,pmem,rss,vsz,stat,comm --forest
+                free -m
+                tail -n 10 evidence/t385.log
+                if test -d "$RUNNER_TEMP/t385-admission"; then
+                  # Nested stage names, byte counts and mtimes show progress
+                  # even while the wrapper is waiting on a quiet child.
+                  find "$RUNNER_TEMP/t385-admission" -type f \( -name '*.log' -o -name 'RESULT.json' -o -name 'STAGES.json' -o -name 'RELEASE-RECEIPT.json' \) -printf '%TY-%Tm-%TdT%TH:%TM:%TS %s %p\n' | sort
+                fi
+              } 2>&1 | tee -a evidence/t385-progress.log
+              sleep 60 &
+              sleep_pid=$!
+              wait "$sleep_pid"
+            done
+          ) &
+          monitor_pid=$!
+          wait "$replay_pid"
+          result=$?
+          echo "$result" > evidence/t385-exit-code.txt
+          kill "$monitor_pid" 2>/dev/null
+          wait "$monitor_pid" 2>/dev/null
+          echo "$(date -u +%FT%TZ) T385 finished with exit $result"
+          tail -n 40 evidence/t385.log
+          cat evidence/t385-resources.txt
+          free -m > evidence/memory-after.txt
+          df -h > evidence/disk-after.txt
           if test -d "$RUNNER_TEMP/t385-admission"; then
             find "$RUNNER_TEMP/t385-admission" -type f \( -name '*.log' -o -name 'RESULT.json' -o -name 'STAGES.json' -o -name 'RELEASE-RECEIPT.json' \) -size -8M -print0 | tar --null -T - -czf evidence/t385-generated-evidence.tar.gz
           fi
@@ -87,3 +131,4 @@ jobs:
         run: |
           test "$(cat evidence/r437-exit-code.txt)" = 0
           test "$(cat evidence/t385-exit-code.txt)" = 0
+
