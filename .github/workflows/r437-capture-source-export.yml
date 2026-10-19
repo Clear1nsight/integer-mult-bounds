@@ -1,0 +1,58 @@
+name: R437 capture source export
+on:
+  push:
+    branches: [validation/r437-capture-sources-20261019]
+    paths: [.github/workflows/r437-capture-source-export.yml]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: CrocSwap/integer-mult-bounds
+          ref: 20ecf2891d80b5acf18d980b2164fb44ea7faa90
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            research/selected-bit-physical-caller
+            scripts
+            docs/research
+            notes
+            certificates
+          persist-credentials: false
+      - name: Export immutable sources and checkpoint
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          mkdir -p audit-source-evidence
+          git rev-parse HEAD > audit-source-evidence/head.txt
+          git ls-remote https://github.com/CrocSwap/integer-mult-bounds.git refs/heads/main > audit-source-evidence/main.txt
+          git ls-tree -r HEAD research/selected-bit-physical-caller scripts docs/research notes certificates > audit-source-evidence/git-tree.txt
+          python3 scripts/find_overlap.py 'R437' 'capture' --refresh --json > audit-source-evidence/overlap.json 2> audit-source-evidence/overlap.err || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          roots=['research/selected-bit-physical-caller','scripts','docs/research','notes','certificates']
+          pins={p.as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for root in roots for p in Path(root).rglob('*') if p.is_file() and not p.is_symlink()}
+          Path('audit-source-evidence/sha256.json').write_text(json.dumps(pins,sort_keys=True,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r437-pinned-physical-caller-sources
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            research/selected-bit-physical-caller/
+            scripts/
+            docs/research/
+            notes/
+            certificates/
+            AGENTS.md
+            autoresearch.md
+            CONTRIBUTING.md
+            audit-source-evidence/
