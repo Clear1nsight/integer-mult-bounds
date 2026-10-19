@@ -1,0 +1,45 @@
+name: Pinned rank-transform source export
+on:
+  push:
+    branches: [research/rank-profile-circuit-transforms-20261019]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Fetch only public pinned research inputs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, pathlib, urllib.request
+          out = pathlib.Path('rank-inputs')
+          pins = [
+            ('dataisfire', 'fa041037a3374eaa08feeca0b26a5d6893194147', 'research/staged544-producer-return/', [
+              'words/BORROW-WORD-43base.json.gz', 'words/BORROW-WORD-43extra.json.gz',
+              'audit_core.py', 'audit_verify.py', 'SOURCE-CREDITS.md', 'PROOF.md', 'inputs/PROFILE.json']),
+            ('CrocSwap', '20ecf2891d80b5acf18d980b2164fb44ea7faa90', '', [
+              'docs/research/research-package-guide.md', 'scripts/research_package.py',
+              'research/rank7-joint-endframes/data/REWRITES-2957.json',
+              'research/rank7-joint-endframes/vendor/declared_rewrites.py'])]
+          expected = {'words/BORROW-WORD-43base.json.gz': '674ea18ade4af85ca865fb08dc973637a09e30e6',
+                      'words/BORROW-WORD-43extra.json.gz': 'b17e2be67e327f04802fd034c344fe4253c13a4a',
+                      'audit_core.py': '8b5e1d5f2a106402f036b63028ecef31a4e4c462'}
+          for owner, commit, prefix, paths in pins:
+              for path in paths:
+                  url = f'https://raw.githubusercontent.com/{owner}/integer-mult-bounds/{commit}/{prefix}{path}'
+                  data = urllib.request.urlopen(url, timeout=45).read()
+                  blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+                  if path in expected and blob != expected[path]:
+                      raise ValueError(f'Wrong pinned blob for {path}')
+                  target = out / prefix / path
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_bytes(data)
+                  print(path, len(data), blob, hashlib.sha256(data).hexdigest())
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rank-inputs
+          path: rank-inputs/
+          retention-days: 3
