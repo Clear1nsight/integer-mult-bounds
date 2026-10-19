@@ -1,0 +1,44 @@
+name: P104 consumer source inspection
+on:
+  push:
+    branches: [validation/p104-consumer-inspect-20261019]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 20ecf2891d80b5acf18d980b2164fb44ea7faa90
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: research/p104-native-channel/inputs
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Inspect the frozen witness without changing inputs
+        run: |
+          python -B - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path('research/p104-native-channel/inputs/LOWRANK-WITNESS.json')
+          raw=p.read_bytes()
+          if hashlib.sha256(raw).hexdigest() != '0f541bef7f19fdeffd67157684e9f03d785f42c89973632f508fc1a0452b580e': raise ValueError('pin')
+          w=json.loads(raw)
+          print('KEYS',[(k,type(v).__name__,len(v) if hasattr(v,'__len__') else None) for k,v in w.items()])
+          for k,v in w.items():
+            if isinstance(v,list) and len(v)>3000:
+              print('EVENT_KEY',k)
+              print('FIRST_EVENTS',json.dumps(v[:4]))
+              print('LAST_EVENTS',json.dumps(list(enumerate(v[-48:],len(v)-48))))
+              tail=[]
+              for i,e in enumerate(v):
+                s=json.dumps(e)
+                if i>3000 and 'Q' in s and 'X' in s: tail.append((i,e))
+              print('QX_TAIL_COUNT',len(tail),'QX_FIRST',json.dumps(tail[:8]))
+              print('QX_LAST',json.dumps(tail[-8:]))
+          print('FINAL_FRAMES',json.dumps(w['final_frames']))
+          PY
+          git diff --exit-code
