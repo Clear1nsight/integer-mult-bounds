@@ -1,0 +1,32 @@
+name: P104 exact-head source-bound validation
+on:
+  push:
+    branches:
+      - validation/p104-direct-source-bound
+permissions:
+  contents: read
+jobs:
+  source-bound:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out frozen scientific head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 9d56eeedbed5e3e9bbbc8c189d66f14cf15b6067
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Exact scientific commit and initial file inventory
+        run: |
+          test "$(git rev-parse HEAD)" = 9d56eeedbed5e3e9bbbc8c189d66f14cf15b6067
+          python --version
+          git ls-files research/p104-role-exchange-residue | xargs sha256sum > /tmp/p104-before.sha256
+      - name: Registered package metadata, pins, and all four replays
+        run: python -I -B scripts/research_package.py --package research/p104-role-exchange-residue
+      - name: Confirm package bytes remain unchanged
+        run: |
+          sha256sum --check /tmp/p104-before.sha256
+          git diff --exit-code
