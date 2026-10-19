@@ -1,0 +1,75 @@
+name: Admission audit publication checks
+on:
+  push:
+    branches: ['audit/staged544-r437-admission-20261019']
+    paths: ['.github/workflows/admission-audit-publication-check.yml']
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: Clear1nsight/integer-mult-bounds
+          ref: b122e6ceab16bc1c6df818490ea5a21e864e0786
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            research/staged544-r437-admission-audit
+            scripts
+            docs/research
+            certificates
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate metadata and run registered independent checker
+        run: |
+          mkdir -p evidence
+          python -VV > evidence/python.txt
+          git rev-parse HEAD > evidence/head.txt
+          python -B scripts/research_package.py --package research/staged544-r437-admission-audit --check-only 2>&1 | tee evidence/metadata.log
+          python -B scripts/research_package.py --package research/staged544-r437-admission-audit 2>&1 | tee evidence/registered.log
+          python -O -B research/staged544-r437-admission-audit/verify.py > evidence/optimized.json
+          cmp evidence/optimized.json research/staged544-r437-admission-audit/RESULT.json
+          python -B scripts/check_research_commit.py --package research/staged544-r437-admission-audit --check-source-history 2>&1 | tee evidence/publication.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: audited-publication-bytes
+          retention-days: 14
+          include-hidden-files: true
+          path: |
+            evidence/
+            research/staged544-r437-admission-audit/
+  t385-bounded:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: hexapode/integer-mult-bounds
+          ref: de2cd5c58009205210e3bf328b0ef5cadf3903af
+          sparse-checkout: research/staged544-t385
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bounded author verifier, not full fresh admission
+        run: |
+          mkdir -p evidence
+          python -VV > evidence/python.txt
+          git rev-parse HEAD > evidence/head.txt
+          set +e
+          timeout 360s python -B research/staged544-t385/verify.py > evidence/t385-bounded.log 2>&1
+          echo "$?" > evidence/t385-bounded-exit-code.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t385-bounded-replay
+          retention-days: 14
+          path: evidence/
+      - name: Require bounded replay to pass
+        run: test "$(cat evidence/t385-bounded-exit-code.txt)" = 0
