@@ -18,27 +18,38 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
-      - name: Inspect the frozen witness without changing inputs
+      - name: Bind the exact cleanup matrix and factorisation
         run: |
           python -B - <<'PY'
-          import json,hashlib
+          import json,hashlib,itertools,collections
+          from fractions import Fraction as F
           from pathlib import Path
-          p=Path('research/p104-native-channel/inputs/LOWRANK-WITNESS.json')
-          raw=p.read_bytes()
+          root=Path('research/p104-native-channel/inputs')
+          raw=(root/'LOWRANK-WITNESS.json').read_bytes()
           if hashlib.sha256(raw).hexdigest() != '0f541bef7f19fdeffd67157684e9f03d785f42c89973632f508fc1a0452b580e': raise ValueError('pin')
-          w=json.loads(raw)
-          print('KEYS',[(k,type(v).__name__,len(v) if hasattr(v,'__len__') else None) for k,v in w.items()])
-          for k,v in w.items():
-            if isinstance(v,list) and len(v)>3000:
-              print('EVENT_KEY',k)
-              print('FIRST_EVENTS',json.dumps(v[:4]))
-              print('LAST_EVENTS',json.dumps(list(enumerate(v[-48:],len(v)-48))))
-              tail=[]
-              for i,e in enumerate(v):
-                s=json.dumps(e)
-                if i>3000 and 'Q' in s and 'X' in s: tail.append((i,e))
-              print('QX_TAIL_COUNT',len(tail),'QX_FIRST',json.dumps(tail[:8]))
-              print('QX_LAST',json.dumps(tail[-8:]))
-          print('FINAL_FRAMES',json.dumps(w['final_frames']))
+          w=json.loads(raw); p=w['program']; kinds=collections.Counter(e[0] for e in p)
+          print('OP_SCHEMA',json.dumps({k:next(e for e in p if e[0]==k) for k in kinds}))
+          print('OP_COUNTS',json.dumps(kinds,sort_keys=True))
+          print('PRE_CUT_LAST',json.dumps(list(enumerate(p[3632:3642],3632))))
+          fixture=json.loads((root/'P104-FIXTURE.json').read_text())['section4_explicit_P104']
+          roots=set()
+          for a,b in itertools.combinations(range(8),2):
+            for sign in (-1,1):
+              v=[0]*8;v[a]=2;v[b]=2*sign;roots.add(tuple(v))
+          for s in itertools.product((-1,1),repeat=7):
+            if s.count(-1)%2==0: roots.add((1,)+s)
+          ports=sorted(roots-{tuple(x) for x in fixture['F0']+fixture['C']})
+          J=[0,1,3,6,22,31,93,103];N=[i for i in range(104) if i not in J]
+          B=[[F(sum(a*b for a,b in zip(ports[j],ports[n])),8) for n in N] for j in J]
+          D=[[F(0)]*104 for _ in range(8)]
+          for e in p[3642:]:
+            if e[0]!='add' or not e[1].startswith('Q') or not e[2].startswith('X'): raise ValueError('suffix')
+            D[int(e[1][1:])][int(e[2][1:])]+=F(e[3])
+          T=[[r[j] for j in J] for r in D]
+          if not all(D[k][n]==sum(T[k][b]*B[b][a] for b in range(8)) for k in range(8) for a,n in enumerate(N)): raise ValueError('factor')
+          print('CLEANUP_FACTOR',json.dumps([[str(x) for x in r] for r in T]))
+          print('FACTOR_COUNTS',sum(x!=0 for r in D for x in r),sum(x!=0 for r in T for x in r))
+          print('SOURCE_FILE_SIZES',len(raw),len((root/'P104-FIXTURE.json').read_bytes()))
+          print('FROZEN_MAIN',__import__('subprocess').check_output(['git','rev-parse','HEAD']).decode().strip())
           PY
           git diff --exit-code
