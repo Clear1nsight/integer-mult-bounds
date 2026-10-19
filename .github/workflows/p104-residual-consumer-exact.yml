@@ -15,7 +15,7 @@ jobs:
       - name: Check out the exact scientific head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 96cce7bcd5dea37298383414a7191f6c11441929
+          ref: 2cba526a4ebe0ef6c3c0143498adcf67dca97941
           fetch-depth: 0
           persist-credentials: false
           sparse-checkout: |
@@ -29,7 +29,7 @@ jobs:
           python-version: '3.12'
       - name: Canonical checkpoint and initial inventory
         run: |
-          test "$(git rev-parse HEAD)" = 96cce7bcd5dea37298383414a7191f6c11441929
+          test "$(git rev-parse HEAD)" = 2cba526a4ebe0ef6c3c0143498adcf67dca97941
           git fetch --no-tags --filter=blob:none https://github.com/CrocSwap/integer-mult-bounds.git main
           echo "CANONICAL_MAIN=$(git rev-parse FETCH_HEAD)"
           for p in AGENTS.md autoresearch.md CONTRIBUTING.md docs/research/current-priorities.md docs/research/agent-task-catalog.json certificates/selected-result.json; do
