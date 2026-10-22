@@ -9,16 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Read pinned public source
+      - name: Read remaining pinned public sources
         run: |
           git init source
           cd source
           git fetch --depth=1 --filter=blob:none https://github.com/intqwq/integer-mult-bounds.git 4b4c75bc0fd64d3eee54029e8d2fab834251fca6
           test "$(git rev-parse FETCH_HEAD)" = 4b4c75bc0fd64d3eee54029e8d2fab834251fca6
           mkdir ../export
-          git archive FETCH_HEAD AGENTS.md CONTRIBUTING.md autoresearch.md LICENSE scripts docs/research certificates/selected-result.json research/warp-interface-20261022 research/kappa-interface-round2-20261022 research/scalar-reorder-20261022 research/query-projector-interface-20261022 research/joint-helper-lattice research/fresh-helper-boundary research/missing-join-frame research/query-thinned-controllers research/higher-moment-strictification research/kappa-rebuild research/kappa-causal-continuation/buffer-borrowing research/kappa-function-composition/complex research/native-warp-extraction-boundary research/t74-native-fast/vendor/native/new/code/borrow/vendor/clifford research/transported-warp-frames research/kappa-0023-productive-jobs | tar -x -C ../export
+          git archive FETCH_HEAD .github/pull_request_template.md research/fresh-helper-thinned research/pr4359-p7-padding certificates/frontier4359-source.json | tar -x -C ../export
+          git fetch --depth=1 --filter=blob:none https://github.com/Clear1nsight/integer-mult-bounds.git af86fb28f4fe039d4bb8419850af99a6fc474587
+          test "$(git rev-parse FETCH_HEAD)" = af86fb28f4fe039d4bb8419850af99a6fc474587
+          git archive FETCH_HEAD research/pr4470-exact-transport-audit | tar -x -C ../export
       - uses: actions/upload-artifact@v4
         with:
-          name: pinned-public-warp-sources
+          name: remaining-public-warp-sources
           path: export
+          include-hidden-files: true
           retention-days: 7
