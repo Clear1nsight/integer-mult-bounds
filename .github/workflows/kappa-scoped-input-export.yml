@@ -1,0 +1,66 @@
+name: Kappa scoped immutable input export
+on:
+  push:
+    branches: [research/kappa-source-export-20261022-0539]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: f626db5c3a3d781d8f7695038776c621651f75e1
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Collect immutable source closure and orientation notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,shutil,subprocess
+          root=Path.cwd();out=Path('/tmp/kappa-sources');out.mkdir()
+          selected=['research/joint-helper-lattice','research/fresh-helper-boundary','research/fresh-helper-thinned','research/missing-join-frame','research/query-thinned-controllers','research/kappa-rebuild','research/rank-convergence','research/pr4470-frame-audit','research/higher-moment-strictification','research/p7-logarithmic-compiler']
+          tracked=subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          wanted=set()
+          for p in tracked:
+            if not p:continue
+            if p in ['AGENTS.md','CONTRIBUTING.md','autoresearch.md','LICENSE','NOTICE','certificates/selected-result.json','.github/pull_request_template.md'] or p.startswith(('scripts/','docs/research/')) or any(p==d or p.startswith(d+'/') for d in selected) or (p.startswith('research/') and len(p.split('/'))==3 and p.endswith(('/README.md','/TASK.json'))):wanted.add(p)
+          # Include every declared live input of selected research manifests, recursively.
+          pending=list(selected);seen=set()
+          while pending:
+            d=pending.pop()
+            if d in seen:continue
+            seen.add(d)
+            for name in ['VERIFY.json','SOURCES.json']:
+              path=root/d/name
+              if not path.is_file():continue
+              data=json.loads(path.read_text())
+              inputs=data.get('inputs',[]) if name=='VERIFY.json' else [r['path'] for r in data.get('files',[]) if r.get('usage')=='input']
+              for p in inputs:
+                if p in tracked:
+                  wanted.add(p)
+                  parent=str(Path(p).parent)
+                  if (root/parent/'VERIFY.json').is_file() and parent not in seen:
+                    pending.append(parent)
+                    wanted.update(x for x in tracked if x.startswith(parent+'/'))
+          rows=[]
+          for p in sorted(wanted):
+            src=root/p
+            if not src.is_file() or src.is_symlink():continue
+            b=src.read_bytes();dst=out/p;dst.parent.mkdir(parents=True,exist_ok=True);dst.write_bytes(b)
+            blob=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+            expected=subprocess.check_output(['git','rev-parse','HEAD:'+p],text=True).strip()
+            if blob!=expected:raise ValueError('noncommitted bytes '+p)
+            rows.append(dict(path=p,git_blob=blob,sha256=hashlib.sha256(b).hexdigest(),bytes=len(b)))
+          (out/'EXPORT.json').write_text(json.dumps(dict(source='f626db5c3a3d781d8f7695038776c621651f75e1',files=rows),indent=2)+'\n')
+          print('PASS_IMMUTABLE_SOURCE_EXPORT',len(rows),'bytes',sum(r['bytes'] for r in rows))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kappa-immutable-sources
+          path: /tmp/kappa-sources
+          include-hidden-files: true
+          retention-days: 7
