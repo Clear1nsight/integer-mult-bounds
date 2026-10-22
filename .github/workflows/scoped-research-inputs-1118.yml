@@ -1,0 +1,77 @@
+name: Scoped research inputs 1118
+on:
+  push:
+    branches: [research/scoped-inputs-20261022-1118]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: hexapode/integer-mult-bounds
+          ref: c665f908fc991aa558ea8a8cd33e9ad26f97a22d
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            scripts
+            docs/research
+            certificates
+            research/helper621-warp-combination
+      - name: Export exact scientific inputs and guidance
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 --filter=blob:none https://github.com/CrocSwap/integer-mult-bounds.git main
+          git rev-parse FETCH_HEAD > /tmp/canonical-main.txt
+          test "$(cat /tmp/canonical-main.txt)" = f626db5c3a3d781d8f7695038776c621651f75e1
+          git fetch --no-tags --depth=1 --filter=blob:none https://github.com/intqwq/integer-mult-bounds.git 4b4c75bc0fd64d3eee54029e8d2fab834251fca6
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,subprocess
+          out=Path('/tmp/scoped-inputs'); out.mkdir()
+          records=[]
+          def git(*args): return subprocess.check_output(['git','--no-replace-objects',*args])
+          def take(commit,path):
+            mode,kind,blob=git('ls-tree',commit,'--',path).decode().split('\t')[0].split()
+            if kind!='blob' or mode not in ('100644','100755'): raise ValueError(path)
+            data=git('cat-file','blob',commit+':'+path)
+            actual=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+            if actual!=blob: raise ValueError('blob mismatch '+path)
+            dst=out/'repo'/path; dst.parent.mkdir(parents=True,exist_ok=True)
+            if dst.exists() and dst.read_bytes()!=data: raise ValueError('conflicting export '+path)
+            dst.write_bytes(data)
+            records.append(dict(path=path,commit=commit,git_blob=blob,sha256=hashlib.sha256(data).hexdigest()))
+          def directory(commit,path):
+            for p in git('ls-tree','-r','--name-only',commit,'--',path).decode().splitlines(): take(commit,p)
+          main=Path('/tmp/canonical-main.txt').read_text().strip()
+          for p in ['AGENTS.md','autoresearch.md','CONTRIBUTING.md','LICENSE','.github/pull_request_template.md','certificates/selected-result.json']:
+            take(main,p)
+          for p in ['scripts','docs/research']:
+            directory(main,p)
+          pred='c665f908fc991aa558ea8a8cd33e9ad26f97a22d'; package='research/helper621-warp-combination'
+          directory(pred,package)
+          manifest=json.loads(git('show',pred+':'+package+'/VERIFY.json'))
+          for p in manifest['inputs']: take(pred,p)
+          warp='4b4c75bc0fd64d3eee54029e8d2fab834251fca6'
+          for p in ['research/warp-interface-20261022','research/kappa-interface-round2-20261022','research/scalar-reorder-20261022','research/query-projector-interface-20261022/positive-candidate-audit']:
+            directory(warp,p)
+          (out/'EXPORT.json').write_text(json.dumps(records,indent=2)+'\n')
+          (out/'CHECKPOINT.json').write_text(json.dumps({'canonical_main':main,'source4626':pred,'source4610':warp},indent=2)+'\n')
+          print('PASS_SCOPED_IMMUTABLE_EXPORT',len(records))
+          PY
+      - name: Refresh overlap snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +e
+          timeout 240 python -B scripts/find_overlap.py 'helper621' 'warp' '4626' --cache /tmp/scoped-inputs/overlap-cache.json --refresh --json > /tmp/scoped-inputs/overlap-report.json 2> /tmp/scoped-inputs/overlap-stderr.txt
+          echo "$?" > /tmp/scoped-inputs/overlap-exit.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scoped-inputs-1118
+          path: /tmp/scoped-inputs
+          retention-days: 7
