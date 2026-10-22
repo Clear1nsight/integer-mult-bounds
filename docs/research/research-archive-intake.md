@@ -147,3 +147,67 @@ The [exact-head delta](pr-intake-evidence/queue-catchup-20261017.json) covers 79
 ## Delta intake through PR3197
 
 The [exact-head delta](pr-intake-evidence/queue-tail-20261017.json) covers two closing-delta heads: PR3197 retained as a source archive, and revised PR3184 held because its metadata changes do not resolve the physical-operator objection. No scientific verifier was run.
+
+## Delta intake through PR3297
+
+The [exact-head delta](pr-intake-evidence/queue-refresh-20261017.json) covers 100 heads: 97 research archives (one historical version and three separately reviewed manual workflows), and three explicit operator-correctness holds. No contribution verifier or full supplier replay was executed. Exact source identities, contributor credit and open scientific obligations are recorded in the ledger.
+
+## Delta intake through PR3331
+
+The [exact-head delta](pr-intake-evidence/queue-remainder-20261017.json) covers 34 PRs plus the concurrent PR3315 revision:32 research archives, the reviewed opt-in source-history preflight, and a reviewed P104 navigation update. PR3315’s original default-tree planning claim is superseded: use [the corrected historical source](https://github.com/CrocSwap/integer-mult-bounds/tree/240e7f68c6be0cd7193abdd1d686ec5b90ab5355/research/k2-class-c-config-audit), which gives a two-config planning result conditional on geometric dominance. Scientific replay and frontier admission remain separate. Focused tooling checks are recorded in the [test receipts](pr-intake-evidence/queue-remainder-20261017-checks.txt).
+
+## Delta intake through PR3429
+
+The [exact-head delta](pr-intake-evidence/queue-oct18-20261018.json) covers 100 heads: 95 source archives, a reviewed descendant-bytecode fix and a reviewed worker-width report. PR1365/1494 remain deferred for formalization review; PR3251 remains on hold pending resolution of physical-operator counteraudits. Archive acceptance is not mathematical validation. No selected-frontier change.
+
+## Delta intake through PR3528
+
+The [exact-head delta](pr-intake-evidence/queue-oct18b-20261018.json) covers 100 heads: 99 source archives, including historical-only PR3436 and the superseded PR3457 allocation. The unchanged PR2361 CI proposal remains on hold. PR3452 reports a correction to PR2890 Lemma C5; PR3458 reports a cheaper algebraic decoder with native/complete-supplier obligations still open. Archive acceptance is not mathematical validation. No selected-frontier change.
+
+## Delta intake through PR3628
+
+The [exact-head delta](pr-intake-evidence/queue-oct20a-20261020.json) covers 100 heads: 87 source archives, five reviewed tooling fixes, five revision holds and three deferred formalization reviews. PR3544 and PR3577 are retained only at their original commits; their proposed default-tree changes remain inactive. Four research heads share a separately inspected manual-workflow environment fix; it was not dispatched. Contributor-reported pricing, scatter-direction and negative-control defects remain explicit holds. [Focused test receipts](pr-intake-evidence/queue-oct20a-20261020-checks.txt) do not certify scientific claims or change the selected frontier.
+
+## Delta intake through PR3731
+
+The [exact-head delta](pr-intake-evidence/queue-oct20b-20261020.json) covers 100 heads: 82 research archives, thirteen reviewed tooling fixes and five revision holds. PR3633 now has a repaired active owner validator, while old defective copies remain in other releases. Scientific admission remains unverified. The aggregate-versus-per-call integrality objection to PR3729 remains open. [Focused test receipts](pr-intake-evidence/queue-oct20b-20261020-checks.txt) cover tooling only; the selected result is unchanged. The separate [watch-mode migration](pr-intake-evidence/watch-mode-migration-20261020.json) refreshes 43 scheduling records without clearing their substantive obligations.
+
+## Delta intake through PR3831
+
+The [exact-head delta](pr-intake-evidence/queue-oct20c-20261020.json) records 100 decisions: {'archive': 100}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR3974
+
+The [exact-head delta](pr-intake-evidence/queue-oct20d-20261020.json) records 100 decisions: {'archive': 99, 'reviewed_tooling': 1}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4077
+
+The [exact-head delta](pr-intake-evidence/queue-oct20e-20261020.json) records 100 decisions: {'archive': 99, 'waiting_revision': 1}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4166
+
+The [exact-head delta](pr-intake-evidence/queue-oct20f-20261020.json) records 86 decisions: {'archive': 82, 'waiting_revision': 3, 'reviewed_tooling': 1}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4235
+
+The [exact-head delta](pr-intake-evidence/queue-oct21a-20261021.json) records 57 decisions: {'deferred_replay': 1, 'waiting_revision': 5, 'archive': 51}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4339
+
+The [exact-head delta](pr-intake-evidence/queue-oct21b-20261021.json) records 100 decisions: {'archive': 99, 'reviewed_tooling': 1}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4434
+
+The [exact-head delta](pr-intake-evidence/queue-oct21c-20261021.json) records 90 decisions: {'archive': 88, 'reviewed_tooling': 2}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4435
+
+The [exact-head delta](pr-intake-evidence/queue-oct21d-20261021.json) records 1 decisions: {'archive': 1}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4505
+
+The [exact-head delta](pr-intake-evidence/queue-oct21e-20261021.json) records 68 decisions: {'waiting_revision': 5, 'archive': 62, 'reviewed_tooling': 1}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
+
+## Delta intake through PR4507
+
+The [exact-head delta](pr-intake-evidence/queue-oct21f-20261021.json) records 2 decisions: {'archive': 2}. Source-only retention preserves attribution and open scientific obligations. Historical-only files and any workflow configuration resolutions are explicit in that receipt. No scientific replay or selected-frontier change.
