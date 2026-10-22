@@ -1,0 +1,61 @@
+name: Export frozen research inputs 0930
+on:
+  push:
+    branches: [support/research-inputs-20261022-0930]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: CrocSwap/integer-mult-bounds
+          ref: f626db5c3a3d781d8f7695038776c621651f75e1
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            scripts
+            certificates/selected-result.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Export committed package and declared input bytes only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess,zipfile
+          sha='f626db5c3a3d781d8f7695038776c621651f75e1'
+          names=subprocess.check_output(['git','ls-tree','-r','--name-only',sha],text=True).splitlines()
+          prefixes=['scripts/','research/query-thinned-controllers/','research/joint-helper-lattice/','research/fresh-helper-boundary/','research/missing-join-frame/','research/kappa-rebuild/bit/','research/kappa-rebuild/complex/full-identity-certificates/','research/higher-moment-strictification/','research/rank-convergence/','research/pr4470-frame-audit/','research/kappa-0023-productive-jobs/dependencies/kappa-next-regime/bit-compression/carrier-reuse/reference/']
+          exact=['AGENTS.md','CONTRIBUTING.md','autoresearch.md','.github/pull_request_template.md','certificates/selected-result.json','docs/research/current-priorities.md','docs/research/agent-task-catalog.json','docs/research/agent-procedure.md','docs/research/research-family-status.md','docs/research/coordination.md','docs/research/research-package-guide.md','docs/research/contribution-review.md','docs/research/pr-ledger.json','docs/research/pr-intake-decisions.json']
+          selected={p for p in names if any(p.startswith(x) for x in prefixes) or p in exact}
+          cache={}
+          def get(path):
+            if path not in cache:cache[path]=subprocess.check_output(['git','--no-replace-objects','show',sha+':'+path])
+            return cache[path]
+          # Include explicit live inputs, without pretending to infer imports.
+          for path in list(selected):
+            if path.endswith('/SOURCES.json'):
+              try:obj=json.loads(get(path))
+              except (ValueError,subprocess.CalledProcessError):continue
+              for row in obj.get('files',[]):
+                q=row.get('path')
+                if row.get('usage')=='input' and q in names:selected.add(q)
+          records=[];out=pathlib.Path('/tmp/research-export');out.mkdir()
+          for path in sorted(selected):
+            data=get(path);blob=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+            expected=subprocess.check_output(['git','rev-parse',sha+':'+path],text=True).strip()
+            if expected!=blob:raise ValueError('Source mismatch '+path)
+            records.append(dict(path=path,git_blob=blob,sha256=hashlib.sha256(data).hexdigest(),bytes=len(data)))
+          with zipfile.ZipFile(out/'sources.zip','w',zipfile.ZIP_DEFLATED) as z:
+            for row in records:z.writestr(row['path'],get(row['path']))
+            z.writestr('EXPORT.json',json.dumps(dict(base_commit=sha,files=records),indent=2)+'\n')
+          print('PASS_SOURCE_EXPORT files='+str(len(records))+' bytes='+str(sum(r['bytes'] for r in records)))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frozen-research-inputs-0930
+          path: /tmp/research-export/sources.zip
+          retention-days: 7
