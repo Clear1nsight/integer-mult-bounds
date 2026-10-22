@@ -17,7 +17,10 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-PUBLICATION = "f4657a0ad4c11a56646c8c6c422f09335b0c73ba"
+# Canonical upstream introduction, reachable from a clean upstream checkout.
+# The fork publication f4657a0... carries the same manifest blob, but is not
+# upstream ancestry and must not be supplied only by a developer's object cache.
+PUBLICATION = "d11655a9fd1c7eedc52e0e9720158bd17d29192a"
 PACKAGE = "research/historical-1042-link"
 ORIGINAL = {
     "verify.py": "12170922e5cd84746089d022f103bfe931fb8a15",

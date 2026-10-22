@@ -184,6 +184,12 @@ predecessor head `af86fb28f4fe039d4bb8419850af99a6fc474587`:
 All original invalidation paths remain declared. Original verifiers, result
 receipts, mathematical inputs and source hashes are retained. The fourth
 package, `k8-three-coordinate-temporal-seed21`, is replayed without changes.
+Upstream execution exposed one fork-only publication reference in the reused
+adapter. It now reads the byte-identical manifest at canonical upstream
+introduction `d11655a9fd1c7eedc52e0e9720158bd17d29192a`; the original manifest
+blob guard is unchanged. An additional test requires this pin to be reachable
+from HEAD, preventing an unrelated cached fork object from hiding missing
+upstream history.
 Report hosted workflow outcomes against the final pushed SHA; these repairs
 do not establish a new scientific result.
 

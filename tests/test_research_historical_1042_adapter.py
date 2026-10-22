@@ -16,6 +16,15 @@ SPEC.loader.exec_module(A)
 
 
 class Historical1042AdapterTests(unittest.TestCase):
+    def test_publication_manifest_is_available_in_head_history(self):
+        # A locally cached fork commit can satisfy cat-file while remaining
+        # absent from upstream CI's full checkout. Require reachable history.
+        subprocess.run(["git", "--no-replace-objects", "merge-base",
+                        "--is-ancestor", A.PUBLICATION, "HEAD"],
+                       cwd=ROOT, check=True, capture_output=True)
+        raw = A.git_bytes(ROOT, A.PUBLICATION + ":" + A.PACKAGE + "/SOURCES.json")
+        self.assertEqual(A.blob_id(raw), A.ORIGINAL["SOURCES.json"])
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
