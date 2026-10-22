@@ -158,4 +158,33 @@ supported checksums together. Run the full workflow lint and guard regression
 suite, including negative controls, before publishing the update. A green check
 at an older head is not verification of the update.
 
+## Current integration repair (2026-10-22)
+
+The upstream PR #4548 planning failure came from four selected-result navigation
+checks after integration with main at
+`f626db5c3a3d781d8f7695038776c621651f75e1`. The current CI guide now follows the
+selected record's #4359 command and evidence links. The status page separates
+the selected decimal from its fraction and places the history banner before
+the first historical checkpoint. Neither the selected record nor its evidence
+is changed.
+
+These documentation edits select four registered packages. This branch reuses
+the historical adapter, source-role repairs and six rejecting/positive tests
+from [PR #4542](https://github.com/CrocSwap/integer-mult-bounds/pull/4542), exact
+predecessor head `af86fb28f4fe039d4bb8419850af99a6fc474587`:
+
+- D8 assignment and navigation documents retain their original blob and SHA256
+  authentication as provenance; the mathematical reference remains a live input.
+- PR3563's #1042 finding runs the original verifier, tests and receipt against
+  its authenticated historical snapshot. Its previous-record assertion applies
+  to that snapshot. The current status tests separately check current navigation.
+- The locale replay authenticates the historical status text as provenance and
+  still executes its full declared checks against the current documentation.
+
+All original invalidation paths remain declared. Original verifiers, result
+receipts, mathematical inputs and source hashes are retained. The fourth
+package, `k8-three-coordinate-temporal-seed21`, is replayed without changes.
+Report hosted workflow outcomes against the final pushed SHA; these repairs
+do not establish a new scientific result.
+
 Prepared with OpenAI assistance. Apache-2.0.
