@@ -1,0 +1,8 @@
+{
+  "base": "01014cbe772ea5a59ccbc55266222433944c7368",
+  "own_input_ancestor": "c8162607d3576c3387eddf216882bc1b85a92b40",
+  "preserved_error_ref": "verify/fraction-type-gate-setup-error-20261027",
+  "exact_changes": "A\tresearch/fraction-type-gate-feasibility/NOTICE\nA\tresearch/fraction-type-gate-feasibility/frozen.py\nA\tresearch/fraction-type-gate-feasibility/inputs/PR5848.tar\nA\tresearch/fraction-type-gate-feasibility/parent_finite.py\nA\tresearch/fraction-type-gate-feasibility/table_parent.py\n",
+  "unrelated_historical_files_removed": false,
+  "runtime_materialization": "Copied only available original scripts/root files; whole original HEAD index retained without requiring missing unrelated blobs."
+}

@@ -1,0 +1,57 @@
+{
+  "task": "Hoist repeated table operand type checks using a source-bound entry domain and internal Fraction preservation proof",
+  "frozen_PR5848": "66fb6c6b8683b37967e9d7f313b3df99a49d2406",
+  "parent_table_artifact": "df9dc4c89b31494f1390d16b9ca2a15e5946e853",
+  "canonical_main": "de5ec2e7a6074068452f45b1a191b5c72832df4a",
+  "stage": "PRECONSTRUCTION_FINITE_GATE",
+  "kappa_research": "PAUSED",
+  "ownership": "Parent owns this one experiment; publication agents own earlier two frozen negative branches only. No simultaneous scientific runs.",
+  "domain": "Stable ordinary built-in word/program/weights/rounded containers; scalar inputs limited to exact standard builtin or Fraction types; all used weight pairs exact Fraction. All other inputs use original checked table path.",
+  "proof": "Rows begin empty and only F(1), exact F conversions, sums/products/deletions enter. Thus every row coefficient and old/q/v and used weights are exact F under the entry domain. No arithmetic/score/rounding/witness steps removed.",
+  "gates": [
+    "Static proof and pure fallback gate; retain all predecessor cases/34 controls plus subtype/side-effect/fallback/exception/entry/lifetime/type-preservation controls normally and O.",
+    "One exact original/derived actual trace audit with unchanged complete value/type/witness/hash on25984events799coords.",
+    "Before complete construction, charge new full finite controls to observed trace saving; require credible >=15% complete wall and CPU headroom. No more capacity or algorithm trials.",
+    "Only if feasible, construct at most one full qualifier, run fresh B/C pair >=15% wall AND CPU before remaining B,C,C,B,B,C; all original source coverage and new gates included.",
+    "If whole gate passes, normal/O/sealed committed-source/ancestry/portable/exact-head hosted checks and required template/handoff before performance PR."
+  ],
+  "limits": {
+    "initial_stage_seconds": 600,
+    "shared_seconds": 1500,
+    "source_command_seconds": 180,
+    "group_rss_bytes": 1073741824,
+    "serial": true,
+    "automatic_retries": 0
+  },
+  "stop": [
+    "Any source/coverage/type/value/witness/control/exception/RSS/budget failure; diagnose separately without automatic retry.",
+    "No credible complete15%headroom: stop before complete construction and preserve finding.",
+    "Upstream duplicate active work: coordinate and stop overlap."
+  ],
+  "parent_hashes": {
+    "table_parent.py": "d598b8a757251c1e38ed77af6cc2aebe1b8ae23ad29ce06bff3ca973eb56dbc4",
+    "parent_finite.py": "b2df739750829d7bf1a6446ea79d02a65641d7a85ead56d7ad941069bb146e4f",
+    "frozen.py": "a5848c4290e96fc639bd15beb3d533e49fa026e9e0333381543acdb0bf1a9547",
+    "PR5848.tar": "f899600acb6966a6b028ffbf1e33a94061615626b510feaca8cb073f03a34de6"
+  },
+  "outcome": {
+    "decision": "STOP_BEFORE_COMPLETE_CONSTRUCTION",
+    "baseline_complete_wall_median": 39.01491572102532,
+    "baseline_complete_cpu_median": 38.88,
+    "actual_trace_wall_saved": 6.778890954999952,
+    "actual_trace_cpu_saved": 6.773741021999999,
+    "new_full_finite_wall": 1.7203948120004497,
+    "new_full_finite_cpu": 1.68,
+    "required_fraction": 0.15,
+    "scope": "Model combining a single ordered trace comparison with previous complete medians; not measured complete wall/CPU savings.",
+    "modeled_complete_wall": 33.956419578025816,
+    "modeled_complete_cpu": 33.786258978,
+    "modeled_wall_fraction_saved": 0.12965544201530732,
+    "modeled_cpu_fraction_saved": 0.1310118575617285,
+    "final_identity_only_predicate": true,
+    "all_prior_observations_retained": true
+  },
+  "next": "Preserve fork artifact/upstream finding only. User-requested Astra strategy may nominate a distinct next bounded study; no automatic construction.",
+  "final_controls": 54,
+  "review_correction": "Identity-only type checks prevent foreign metaclass equality; two controls added; final actual audit repeated, prior draft and observations retained."
+}

@@ -1,0 +1,26 @@
+{
+  "exit": 0,
+  "label": "actual-type-gate-identity",
+  "optimized": false,
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "runner_sha256": "7540f8cc4ae4d12ed86c844ef0837a74184d3ada653979608c295c09f200a751",
+  "runtime_policy_sha256": "8db53f259d4fed3be750b5cebc1534db7611005be5b961ba94d65eb2eaec5284",
+  "sampled_process_group_rss_bytes": 110051328,
+  "script": "actual_audit.py",
+  "source_bytes_and_modes_unchanged": true,
+  "source_inventory_sha256": "349af9285cd68cf91f3beaf3d9d90b3975a177a1b3ca8a23aab4e89d16a0c360",
+  "status": "PASS",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_bytes": 772,
+  "stdout_sha256": "8a787acb8e52eb26b2edc2328c97cbe34629821b01505905d58339379f5510e6",
+  "termination": null,
+  "usage": {
+    "exit": 0,
+    "kernel_max_rss_kib": 106020,
+    "system_seconds": 0.11,
+    "user_seconds": 37.3
+  },
+  "wall_seconds": 37.585251858021365
+}

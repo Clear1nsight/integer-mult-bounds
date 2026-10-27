@@ -1,0 +1,17 @@
+{
+  "decision": "STOP_BEFORE_COMPLETE_CONSTRUCTION",
+  "baseline_complete_wall_median": 39.01491572102532,
+  "baseline_complete_cpu_median": 38.88,
+  "actual_trace_wall_saved": 6.778890954999952,
+  "actual_trace_cpu_saved": 6.773741021999999,
+  "new_full_finite_wall": 1.7203948120004497,
+  "new_full_finite_cpu": 1.68,
+  "required_fraction": 0.15,
+  "scope": "Model combining a single ordered trace comparison with previous complete medians; not measured complete wall/CPU savings.",
+  "modeled_complete_wall": 33.956419578025816,
+  "modeled_complete_cpu": 33.786258978,
+  "modeled_wall_fraction_saved": 0.12965544201530732,
+  "modeled_cpu_fraction_saved": 0.1310118575617285,
+  "final_identity_only_predicate": true,
+  "all_prior_observations_retained": true
+}

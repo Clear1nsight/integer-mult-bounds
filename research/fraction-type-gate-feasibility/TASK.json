@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "task_id": "replay-runtime",
+  "original_card": {
+    "id": "replay-runtime",
+    "question": "Can one measured replay bottleneck be sped up without dropping coverage?",
+    "starting_points": [
+      "scripts/run_isolated_tests.py",
+      "scripts/verify_replay_coverage.py",
+      "certificates/selected-result.json"
+    ],
+    "methods": [
+      "Profile one isolated replay and optimize the measured bottleneck.",
+      "Design source-bound reuse with explicit dependency invalidation and negative controls."
+    ],
+    "acceptance_gate": "Report before/after wall time on the same fixture, retained checks and invalidation behavior.",
+    "first_step": {
+      "command": [
+        "python3",
+        "-B",
+        "scripts/research_selected_baseline.py"
+      ],
+      "expected": "PASS_RESEARCH_BASELINE_BINDINGS_ONLY",
+      "inspect": "Resolve the current selected review, separate complex/ordinary BIT/admitted BIT/outer budgets, and compare the card against live handoffs before starting. Historical ceilings require exact source/model equivalence.",
+      "scope": "Source-binding orientation only; not a scientific replay or all-size proof. Materialize selected inputs if this checkout is sparse."
+    },
+    "first_experiment": "Measure one unchanged fixture, preserve check coverage, and test one optimization with invalidation controls.",
+    "bottleneck_link": "Faster trustworthy replays increase review throughput and let mechanism candidates be checked sooner.",
+    "allowed_variations": [
+      "Profile one stage or design one source-bound cache boundary."
+    ],
+    "scope_change_triggers": [
+      "Skipping coverage or comparing different fixtures to claim speedup."
+    ],
+    "overlap_terms": [
+      "replay runtime",
+      "cache invalidation",
+      "isolated tests"
+    ]
+  },
+  "scope_status": "refined",
+  "scope_change_reason": "Explicit donor authorized entry type-check relocation feasibility before construction. Correctness passes; complete screen12.97%wall13.10%CPU does not meet15%, so stop.",
+  "actual_scope": "PR5848/frozen-66fb6c6/Fraction-entry-type-gate-feasibility",
+  "bottleneck_link": "Faster trustworthy replays increase review throughput and let mechanism candidates be checked sooner.",
+  "stop_rule": "Stop after single actual trace audit and complete-cost screen. No full qualifier, no full wall/CPU B-C benchmark, no additional algorithm/capacity trial. Same180s/1GiB/600sinitial1500sshared/serial/no-auto-retry contract.",
+  "time_budget_minutes": 60,
+  "outcome": "negative-result",
+  "evidence": "PROOF.md, RESULT.json, complete-cost screen and raw receipts. Same964 predecessor comparisons/34 controls plus20 new controls normal andO, full actual equality. One manually diagnosed stale-module harness failure retained. Final identity-only metaclass correction and separate repeated actual audit retained.",
+  "author": "Chris R / Clear1nsight",
+  "ai_assistance": "Substantial OpenAI Codex assistance; no scientific subagents or independent human/kernel acceptance. Two publication agents handle older branches only.",
+  "open_questions": [
+    {
+      "question": "Can a distinct source-bound exact arithmetic mechanism remove enough whole-qualification cost?",
+      "why_it_matters": "The exact table plus entry proof still leaves the complete screen below15%; local trace savings alone are insufficient.",
+      "first_step": "A separately assigned primitive/self-time and reuse census with a complete validation/memory/time bill before finite feasibility and construction.",
+      "blocked_by": "New authorization, overlap and a concrete mechanism; no further experiment is dispatched here."
+    }
+  ],
+  "base_commit": "de5ec2e7a6074068452f45b1a191b5c72832df4a"
+}

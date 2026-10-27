@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "status": "ready",
+  "python": "3.12",
+  "requirements": [],
+  "inputs": [
+    "research/fraction-type-gate-feasibility/inputs/PR5848.tar",
+    "research/fraction-type-gate-feasibility/table_parent.py",
+    "research/fraction-type-gate-feasibility/parent_finite.py",
+    "research/fraction-type-gate-feasibility/frozen.py"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "{python}",
+        "-B",
+        "{package}/verify.py"
+      ],
+      "timeout_seconds": 30,
+      "checks": "Fresh964 complete finite comparisons and all34 inherited+20 new controls. Does not freshly execute complete actual qualification or establish performance/kappa."
+    }
+  ]
+}

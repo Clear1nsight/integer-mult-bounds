@@ -1,0 +1,10 @@
+{
+  "prior_gate_result": false,
+  "unexpected_custom_calls": [
+    "custom-metaclass-equality",
+    "custom-metaclass-equality"
+  ],
+  "decision": "FIX_IDENTITY_ONLY_TYPE_PREDICATE_BEFORE_PUBLICATION",
+  "coverage_gap": "tuple membership compares type objects by equality; a foreign metaclass can observe those comparisons",
+  "actual_prior_audit": "still valid for ordinary standard builtins, but predates this stronger fallback correction; rerun once after finite gate"
+}

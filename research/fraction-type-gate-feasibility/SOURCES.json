@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "base_commit": "de5ec2e7a6074068452f45b1a191b5c72832df4a",
+  "files": [
+    {
+      "path": "docs/research/agent-task-catalog.json",
+      "usage": "provenance",
+      "git_blob": "3404fbdd5e7529a0674eef26114b5071e4586cec",
+      "sha256": "ead6cdc9d0af6d58e8a49744d8ec8c7c15e13d2ba93c276c434bcf9b51b93a81"
+    },
+    {
+      "path": "certificates/selected-result.json",
+      "usage": "provenance",
+      "git_blob": "581f8d87008354eb5b869f7ed9de1317ad837ce8",
+      "sha256": "2a0220e866417774606e0f991e41b9c1d26b1f43b97857238cf478dbc7d330b5"
+    },
+    {
+      "path": "research/fraction-type-gate-feasibility/inputs/PR5848.tar",
+      "usage": "input",
+      "git_blob": "307d09d2a968e1bbec8025d9fbd0a884df790d12",
+      "sha256": "f899600acb6966a6b028ffbf1e33a94061615626b510feaca8cb073f03a34de6",
+      "pin": "head:c8162607d3576c3387eddf216882bc1b85a92b40:research/fraction-type-gate-feasibility/inputs/PR5848.tar"
+    },
+    {
+      "path": "research/fraction-type-gate-feasibility/table_parent.py",
+      "usage": "input",
+      "git_blob": "7f44b25859e90d981587a53e9467284961f60a8f",
+      "sha256": "d598b8a757251c1e38ed77af6cc2aebe1b8ae23ad29ce06bff3ca973eb56dbc4",
+      "pin": "head:c8162607d3576c3387eddf216882bc1b85a92b40:research/fraction-type-gate-feasibility/table_parent.py"
+    },
+    {
+      "path": "research/fraction-type-gate-feasibility/parent_finite.py",
+      "usage": "input",
+      "git_blob": "e00dd293859b115cad99644e1c614a13c71fc133",
+      "sha256": "b2df739750829d7bf1a6446ea79d02a65641d7a85ead56d7ad941069bb146e4f",
+      "pin": "head:c8162607d3576c3387eddf216882bc1b85a92b40:research/fraction-type-gate-feasibility/parent_finite.py"
+    },
+    {
+      "path": "research/fraction-type-gate-feasibility/frozen.py",
+      "usage": "input",
+      "git_blob": "eb26be4a0f2e27e03becd3741da98f65799b8f0a",
+      "sha256": "a5848c4290e96fc639bd15beb3d533e49fa026e9e0333381543acdb0bf1a9547",
+      "pin": "head:c8162607d3576c3387eddf216882bc1b85a92b40:research/fraction-type-gate-feasibility/frozen.py"
+    }
+  ],
+  "external_origin": {
+    "pr": 5848,
+    "head": "66fb6c6b8683b37967e9d7f313b3df99a49d2406",
+    "export_files": 97
+  },
+  "predecessor_artifact": {
+    "commit": "df9dc4c89b31494f1390d16b9ca2a15e5946e853",
+    "pr": 5852,
+    "retained_code": "table_parent.py and parent_finite.py exact original bytes, with original imports resolving to new entry wrapper during new finite verification."
+  }
+}

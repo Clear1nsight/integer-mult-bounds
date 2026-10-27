@@ -1,0 +1,40 @@
+[
+  {
+    "argv": [
+      "git",
+      "-C",
+      "/home/d3lerium/.codex/.chatgpt-projects/g-p-6ad5817fd84881918865926b6fd51453/outputs/fraction-primitive-profile-20261027/repo",
+      "worktree",
+      "add",
+      "--no-checkout",
+      "-b",
+      "verify/fraction-type-gate-feasibility-20261027",
+      "/home/d3lerium/.codex/.chatgpt-projects/g-p-6ad5817fd84881918865926b6fd51453/outputs/fraction-type-gate-20261027/repo",
+      "01014cbe772ea5a59ccbc55266222433944c7368"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "Preparing worktree (new branch 'verify/fraction-type-gate-feasibility-20261027')\n"
+  },
+  {
+    "argv": [
+      "git",
+      "-C",
+      "/home/d3lerium/.codex/.chatgpt-projects/g-p-6ad5817fd84881918865926b6fd51453/outputs/fraction-type-gate-20261027/repo",
+      "sparse-checkout",
+      "set",
+      "--no-cone",
+      "/AGENTS.md",
+      "/CONTRIBUTING.md",
+      "/autoresearch.md",
+      "/LICENSE",
+      "/scripts/",
+      "/.github/",
+      "/docs/research/agent-task-catalog.json",
+      "/certificates/selected-result.json"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

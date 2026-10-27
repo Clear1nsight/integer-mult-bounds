@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/d3lerium/.codex/.chatgpt-projects/g-p-6ad5817fd84881918865926b6fd51453/outputs/fraction-type-gate-20261027/feasibility/finite.py", line 118, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/d3lerium/.codex/.chatgpt-projects/g-p-6ad5817fd84881918865926b6fd51453/outputs/fraction-type-gate-20261027/feasibility/finite.py", line 58, in main
+    with source.baseline() as p:
+  File "/usr/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/tmp/precision-linux-source-f_npv41i/research/p104-single-pass-qualification/source.py", line 46, in baseline
+  File "/tmp/precision-linux-source-f_npv41i/research/p104-single-pass-qualification/source.py", line 21, in payload
+  File "/usr/lib/python3.12/pathlib.py", line 1021, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/precision-linux-source-f_npv41i/research/p104-single-pass-qualification/inputs/PR5831.tar'
