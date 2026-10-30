@@ -75,13 +75,13 @@
     ]
   },
   "scope_status": "changed",
-  "actual_scope": "Source-bound independent algebraic audit and safe-fusion theorem for PR6280 dual-exchange consumers, including arbitrary inner functions and exact observer/pair-matching boundaries.",
+  "actual_scope": "Source-bound independent algebraic audit and safe-fusion theorem for PR6280 dual-exchange consumers, including arbitrary inner functions and exact observer/pair-matching boundaries. Extension: same-row changing-dual three-shear junction with exact source tariff, coefficient admission and complete two-consumer local budget.",
   "scope_change_reason": "The assigned formal-interface card is narrowed to a written quantified interface proof and independent free-operator certificate for the newly published PR6280 emitter; no proof-assistant or selected-assumption discharge is claimed.",
   "bottleneck_link": "Repeated scalar basis preparation may be removed only within a closed consumer macro. This proves the exact local tariff and ABI boundary, while leaving actual P104 applicability and all paid native calls open.",
   "budget_minutes": 90,
   "stop_rule": "Stop after the same-pair composition theorem, arbitrary-spare boundary characterization, and source-bound controls; do not launch a physical cut search or claim supplier admission.",
   "outcome": "completed",
-  "evidence": "PROOF.md; verify.py and noncommutative.py; normal/optimized registered checks. Exact predecessor in ORIGIN.json.",
+  "evidence": "PROOF.md; verify.py and noncommutative.py; normal/optimized registered checks. Exact predecessor in ORIGIN.json. TRANSITION-PROOF.md, verify_transition.py, INDEPENDENT-TRANSITION.md and independent_transition.py.",
   "author": "@CubeJerry with OpenAI Codex assistance",
   "ai_assistance": "Substantial OpenAI Codex assistance, including exchange-audit subagent construction and separate adversarial proof review; no independent human or formal-kernel acceptance. Research worker A independently derived and checked the exact invariant-observer class and its reachability limitation.",
   "open_questions": [
@@ -106,5 +106,28 @@
       "rounded prefix amplification, deferred"
     ]
   },
-  "overlap_coverage": "Root checked live PR bodies and bounded all-state exchange/nonlinear searches; narrow main README search found the distinct p104-joint-compensation precedent. Discussion posting unavailable; no exhaustive novelty claim."
+  "overlap_coverage": "Root checked live PR bodies and bounded all-state exchange/nonlinear searches; narrow main README search found the distinct p104-joint-compensation precedent. Discussion posting unavailable; no exhaustive novelty claim.",
+  "extension": {
+    "track_seed": 28,
+    "track": "complex supplier",
+    "scientific_base": "2485805a6d47f36ea83ddde6327d453ac82d44dc",
+    "owned_object": "S_(A,B);S_(A,D) with AB=AD=I in one unchanged physical chart",
+    "selected_candidate": "changing dual columns with fixed row",
+    "deferred_candidates": [
+      "transpose changing rows",
+      "general changing pairs"
+    ],
+    "budget_minutes": 20,
+    "stop_rule": "One valid, completely priced source-bound local improvement or unfavorable complete local budget; no broad circuit search.",
+    "outcome": "Complete local allowance 288\u2192224 after obvious adjacent-sign cancellation (raw 292\u2192224), with every consumer retained; separate unfavorable 132\u2192212 case prevents a uniform saving claim.",
+    "independent_review": "Worker A derived the module identity and constructed a separate source-bound interpreter without importing or reading the author transition code.",
+    "open_obligations": [
+      "Actual selected caller interval and physical role/chart admission",
+      "Compatibility of any removed observation boundary",
+      "New rounded-prefix error admission if used numerically",
+      "Complete physical supplier and recursive cost accounting"
+    ],
+    "no_new_kappa": true,
+    "published_predecessor": "0ff4a9f9cf763d5fa385d674fea915da53792078"
+  }
 }

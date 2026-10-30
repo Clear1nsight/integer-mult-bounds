@@ -104,3 +104,19 @@ The source notice is preserved. New work is Apache-2.0; no literature-wide
 priority claim is made for retractions, conjugation or cancellation.
 
 The registered replay also includes an independent lead-review field interpreter covering all 59,049 F3 function-pair/input/emitter cases for the named nonunit pair, plus a mismatched-pair leakage control.
+
+## Changing dual columns: a completely priced local extension
+
+[TRANSITION-PROOF.md](TRANSITION-PROOF.md) gives the exact same-row junction
+`S_(A,B);S_(A,D) = L_-A;U_(B-D);L_A` for `AB=AD=I`. Its source-bound named
+two-consumer macro reduces scalar allowance **288→224 after cancelling the
+original adjacent signs**, retaining both outer exchanges and all inner calls;
+emitted ADD/SCALE instructions fall **26→20**. The raw source-emission
+comparison is **292→224**, with **28→20** instructions. Difference coefficients and scalar prefixes are checked separately.
+An admitted dyadic example where the tariff instead rises **132→212** makes
+the local cost-comparison requirement explicit.
+
+[INDEPENDENT-TRANSITION.md](INDEPENDENT-TRANSITION.md) supplies a separate module
+derivation and 2,000 nonlinear checks using its own construction and interpreter.
+The new normal/optimized checks are registered in VERIFY.json. No actual P104
+interval, rounded-budget improvement, primitive optimum, or new κ is claimed.
