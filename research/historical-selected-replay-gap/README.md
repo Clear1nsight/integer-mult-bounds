@@ -42,6 +42,8 @@ on seven distinct paths. The other six are `Makefile` (historical prefix),
 `docs/ci-verification.md` is the selected-family replay note; its live digest
 is `c7d3027e9ad8bcbff68f07aa9576b30fb2f3c76c44d876d40c7fdbf4a3e2228a`.
 
+A session walk of every CONFIG entry admitted 28 inputs and rejected these 19. The committed verifier rechecks the 19 rejections, not those 28 admissions.
+
 The helper plan for `01885346d4e78083b0a41786f977f71c73e3ffa2..2485805a6d47f36ea83ddde6327d453ac82d44dc`
 selects nine receipt packages because that commit edits
 `docs/research/pr-ledger.json` and `docs/research/pr-intake-decisions.json`.
