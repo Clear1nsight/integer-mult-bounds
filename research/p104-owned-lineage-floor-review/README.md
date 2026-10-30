@@ -48,6 +48,25 @@ finite facts F1-F3 for root directions. Layer 4 (`--flats`) enumerates all 440,8
 as W-orbits of the fundamental coweights and checks F1 and the span-pair ranks for every flat. All numbers
 are in [RESULT.json](RESULT.json).
 
+## Lean
+
+[lean/Lineage/Basic.lean](lean/Lineage/Basic.lean) formalises Lemma 1 in the abstract form used by the
+proof: values in any field `K`, frames as subspaces of any finite-dimensional `F`-space with any bilinear
+pairing `B`, an antitone frame sequence (SAME hand-offs), P3a as the hypothesis `hw` and R1 as `hu`.
+`factor` is (i) with the explicit vectors alpha_j = sum_l u_l(j) pi_l and beta_i = sum_k w_k(i)/pi_k,
+`alpha_support` / `beta_support` are (ii), `rank_le` and `lineage_cost` are (iii), and `paid_telescope`
+is the telescoping of SAME gaps. Because `hw` only asks where injected content lies, the formal statement
+covers lineages that read X directly (Remark in PROOF.md). No `sorry`; `#print axioms` gives `propext`,
+`Classical.choice`, `Quot.sound` only. Build (Lean `v4.33.0-rc1`, Mathlib pinned in `lake-manifest.json`,
+the same revision as other Lean packages here):
+
+```sh
+cd research/p104-owned-lineage-floor-review/lean && lake exe cache get && lake build
+```
+
+Not formalised: Lemma 2, Theorems 3-4 and the finite facts F1-F3 (these are checked by `verify.py`), and
+the identification of word events with the abstract data (checked on four words by `verify.py`).
+
 ## Relation to existing work
 
 Corollary (completion form) identifies the relay-free owned layer with the repository's masked decoder
@@ -93,7 +112,7 @@ PR6030 and runs layers 3-4 (about 2 minutes). Markers: `PASS_P104_OWNED_LINEAGE_
 - own/owns are not recounted: their exact definition is not given in PR6170's text.
 - The finite facts are computed on the PR6030 completion. PR5907, PR6144 and PR6167 have the same port set
   and completion rank 8, so Theorem U makes the root data identical up to the diagonal gauge.
-- No independent human or proof-kernel review is claimed.
+- Lemma 1 is machine-checked in Lean (see Lean); the rest is not. No independent human review is claimed.
 
 ## Open next questions
 

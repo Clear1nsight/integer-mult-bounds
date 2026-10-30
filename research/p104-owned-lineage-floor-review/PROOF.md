@@ -23,6 +23,9 @@ several moves.
 
 ## Lemma 1 (lineage factorization)
 
+*Machine-checked in Lean: `lean/Lineage/Basic.lean` (`factor`, `alpha_support`, `beta_support`,
+`lineage_cost`, `paid_telescope`).*
+
 Let a lineage have moves 1..t, gathers g_l, landings L_l = g_{l+1}, and v_l = c_l v_{l-1} + w_l with
 w_l in X(g_l) (P3a), v_0 = 0 and c_l != 0. Then there are alpha, beta in Q^104 with
 
