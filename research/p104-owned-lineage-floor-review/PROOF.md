@@ -105,6 +105,20 @@ Two leaves on removed-line directions cannot share that step (F3: the landing wo
 other leaf costs >= 8 along its root path (F2). A group of k leaves under one shared step therefore costs
 >= 1 + 6 + 7(k - 1) = 7k, unshared leaves cost >= 7, and the total is >= 56. []
 
+## Remark (direct reads of X are covered)
+
+`research/fragmentation-ceiling/PROOF.md` (section 5) proves its centre bound A30-CUT under the modelling
+step P-ATOM (carriers get port content only by reading the port) and lists "decoders that read X directly
+(breaking P-ATOM)" among the doors outside its scope (section 6.7). In the P_M accounting used here no such
+step is needed. X lives are public registers, so by P3a (proved in PR6170 from SPEC nesting) a read of any
+X at frame g contributes x-content in X(g), exactly as any other public read at g. Lemma 1 only uses
+w_l in X(g_l), not which register supplied w_l. So every owned lineage that reads X directly, at any frame
+and time, is still a lineage of Lemma 1, and Lemma 2, Theorems 3 and 4 hold unchanged: a relay-free,
+merge-free owned layer with 8 leaves pays >= 56 whoever it reads. The label table is F2^9 because every
+frame is a subspace of F2^9, so this does not open the rank >= 10 table cases of the decoder floor either.
+What remains of that door is the relay case: an X that has received owned content (a symbol) and is read
+again is a STRICT relay, which is outside Lemma 1 (see Scope).
+
 ## Scope
 
 Not covered: merges, STRICT relays, 9 or more leaves, and the orthogonal entries of C. NEED counts the

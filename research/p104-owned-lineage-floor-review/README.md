@@ -66,6 +66,12 @@ leave the block span. Both are local 8-port statements. This package works on th
 layer of real words, lineage by lineage, and does not cover merges. The two results are complementary;
 PR6229's cumulative row-space invariant is the natural tool for the merge case left open here.
 
+**Direct reads of X.** `research/fragmentation-ceiling` proves its centre bound under P-ATOM and lists
+"decoders that read X directly" as an open door. In the P_M accounting this door is closed for the
+relay-free, merge-free layer: by PR6170's P3a a read of X at frame g brings only x-content on ports of g,
+which is what Lemma 1 already allows, so the 8-leaf floor of 56 holds for decoders that read X at any frame
+(PROOF.md, Remark). Only X reads that carry owned symbols (STRICT relays) remain open.
+
 ## Reproduction
 
 From the repository root with CPython 3.12 and NumPy:

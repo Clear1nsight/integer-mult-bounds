@@ -55,6 +55,12 @@
       "usage": "provenance",
       "git_blob": "4b2b3326428046716142a5bfe307263627161283",
       "sha256": "5c978bcdfe2108d531becf790f4c6a7300f923676cb932a8f64627b5437ef7ab"
+    },
+    {
+      "path": "research/fragmentation-ceiling/PROOF.md",
+      "usage": "provenance",
+      "git_blob": "c4033090d7cd35d9c80744922c587ae115b1de8a",
+      "sha256": "28be45a551ed8491be1ebb8c64acba2834aaa402452cb02e3c71c83e49232264"
     }
   ]
 }
