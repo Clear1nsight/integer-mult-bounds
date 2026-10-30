@@ -86,6 +86,7 @@ def mutation_controls():
         shutil.copytree(HERE, package)
         shutil.copytree(runner.SOURCE, source)
         checker = source / "evidence/finite-check/check_support.py"
+        checker.chmod(checker.stat().st_mode | 0o200)
         original = checker.read_bytes()
         checker.write_bytes(original + b"\n")
         command = [sys.executable, "-I", "-W", "error", "-B", str(package / "runner.py")]
@@ -96,6 +97,7 @@ def mutation_controls():
              "changed source was not invalidated")
         checker.write_bytes(original)
         adapter = package / "products.py"
+        adapter.chmod(adapter.stat().st_mode | 0o200)
         original_adapter = adapter.read_text()
         needle = "real[j] += ar * br - ai * bi"
         need(original_adapter.count(needle) == 1, "mutation site changed")

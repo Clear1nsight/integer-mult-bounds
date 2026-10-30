@@ -86,6 +86,10 @@ uncontrolled. Initial load averages were 6.09/4.17/2.73, with another Python
 process using one core; final averages were 1.55/2.68/2.43. These are local
 observations, not a portable speed guarantee.
 
+The timing sample binds implementation commit 662e18c310b2fe3e7594bee9290350cab6eacaf6.
+A later fix makes only temporary mutation-control copies writable when replaying
+from a read-only export. The timed runner and arithmetic bytes are unchanged.
+
 ## Reproduce
 
 From the worktree root, with this interpreter or another CPython 3.12:
