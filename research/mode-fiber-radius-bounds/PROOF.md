@@ -1,4 +1,4 @@
-# Mode-fiber rounding radius: a finite reduction and 1 ≤ R ≤ 6
+# Mode-fiber rounding radius: a finite reduction and 1 ≤ R ≤ 2
 
 Prepared for apoursh with substantial Anthropic Claude assistance. Apache-2.0.
 
@@ -17,7 +17,7 @@ uniform radius
 
 The minimum exists because F(x) is discrete. #6312 proves R ≥ 1, using
 x = (e_0+e_7+e_20+e_111)/2. This note gives a finite characterisation of R = 1
-and a first explicit upper bound.
+and explicit upper bounds: a basis certificate gives R ≤ 6, and the block structure of M gives R ≤ 2.
 
 Write L = Mᵀℤ^112 ⊂ ℤ^8, V = ker Mᵀ ⊂ ℝ^112, Z = Mᵀ[0,1]^112 (a zonotope) and
 S = {Mᵀz : z ∈ {0,1}^112} (subset sums of rows).
@@ -101,8 +101,59 @@ and |z_b − y_b| < τ on B.
 So ρ(y) < 6 for every generic y, and R ≤ 6 by Theorem A(a,b). ∎
 
 Local search over row bases (`search/basis_search.py`, three seeds × 200 restarts)
-found no basis with τ < 6. This method therefore stops at 6; a better bound
-needs a different argument (see the open questions).
+found no basis with τ < 6. This method therefore stops at 6. Theorem C below
+uses the block structure instead.
+
+## 3′. Theorem C: R ≤ 2
+
+*Block structure (exact, verify.py).* For each of the 14 supports s, its 8 rows
+are exactly {σ_s e_{p(s)} + Σ_{k∈s∖p(s)} ε_k e_k : ε ∈ {±1}³}. So one *pinned*
+coordinate p(s) has a fixed sign σ_s, and the three free coordinates take every
+sign pattern. In particular, for every j ∈ s the block contains **four disjoint
+row pairs** (a,b) with ±2e_j ∈ {m_a − m_b, m_a + m_b}:
+
+- if j is free, pair rows that differ only at j, so m_a − m_b = 2(m_a)_j e_j;
+- if j = p(s), pair opposite free patterns, so m_a + m_b = 2σ_s e_j.
+
+Either sign of 2e_j is available with coefficients in {±1} on the pair.
+
+*Hall lemma (exact, verify.py).* For every set X of at most three supports and
+every nonempty J ⊆ {0,…,7}, at least |J| supports outside X meet J. The
+minimum slack over all cases is 3.
+
+*Proof of R ≤ 2.* Let y ∈ [0,1)^112 with t = Mᵀy ∈ L.
+
+1. *Vertex.* P_t = {y′ ∈ [0,1]^112 : Mᵀy′ = t} is a nonempty polytope. Take a
+   vertex y*. Its fractional coordinates F index linearly independent rows, so
+   |F| ≤ 8, and |y*_i − y_i| < 1 for all i. Each block's rows lie in a
+   four-dimensional coordinate subspace, so F contains at most 4 rows of any block.
+2. *Round F.* Let z_F be y*_F rounded to the nearest of {0,1}. Then
+   r′ = Σ_F (y*_i − z_i) m_i lies in L, because t, Σ_{i∉F} y*_i m_i and Σ_F z_i m_i
+   do, and |r′_j| ≤ ½·#{i ∈ F : m_ij ≠ 0} ≤ 4.
+3. *Parity.* h = r′ mod 2 ∈ H8 (§1). If h is a weight-four word, let U be one
+   row outside F with support h. If h = 1⁸, let U be two rows outside F with
+   complementary supports (the complement of a word is a word). If h = 0, let
+   U = ∅. Step 1 guarantees each block has at least 4 rows outside F. Put
+   u = Σ_U m_i, so |u_j| ≤ 1 and r′ − u = 2w with w ∈ ℤ^8 and |w_j| ≤ 2.
+4. *Distinct blocks.* Call rows in F ∪ U damaged, at most 10 of them. A block with
+   at most 2 damaged rows keeps at least 2 intact pairs for each of its
+   coordinates. At most three blocks have three or more damaged rows. By the
+   Hall lemma, the coordinates with w_j ≠ 0 have distinct undamaged-enough
+   blocks s_j ∋ j.
+5. *Assemble.* Set z_i = y*_i for i ∉ F ∪ U, then add 1 on U and, for each j,
+   ±1 on the rows of |w_j| intact pairs of s_j representing 2·sign(w_j)·e_j.
+   All touched rows are distinct. Then Mᵀz = Σ_{i∉F} y*_i m_i + Σ_F z_i m_i + u + 2w = t,
+   and z ∈ ℤ^112.
+6. *Error.* On F, |z_i − y_i| < 1. Elsewhere |z_i − y*_i| ≤ 1 and |y*_i − y_i| < 1,
+   so |z_i − y_i| < 2.
+
+Hence ρ(y) < 2 for every y in the open cube. By Theorem A(a,b), R ≤ 2. ∎
+
+`rounder.py` executes these six steps literally in exact rational arithmetic and
+raises if any step's claim fails. verify.py runs it on a fixed set of exact
+inputs. A separate stress run on 12,000 exact random and sparse inputs found
+no failure; its worst error was 839/420 ≈ 1.998, so 2 is the limit of this
+construction, not evidence about R.
 
 ## 4. Evidence for R = 1 (not a proof)
 
@@ -126,7 +177,7 @@ R is a property of the stated exact-mode contract for this M, inherited from
 #6312. Nothing here shows that an actual caller must preserve these modes, or
 supplies a physical rounder, error ledger, tape/precision bill, supplier
 admission, new κ or frontier change. The five framework assumptions keep
-their status. Theorems A and B are written proofs whose finite inputs are
+their status. Theorems A, B and C are written proofs whose finite inputs are
 checked exactly; no proof-assistant or independent human review is claimed.
-Beck–Fiala's iterative rounding (1981) and the Hamming construction of E8 are
-classical and credited as such.
+Beck–Fiala's iterative rounding (1981), Hall's marriage theorem and the Hamming
+construction of E8 are classical and credited as such.

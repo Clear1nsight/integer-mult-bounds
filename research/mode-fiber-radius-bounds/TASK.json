@@ -67,9 +67,9 @@
   "scope_change_reason": "The session drew recursive-interfaces cards needing a full construction context. #6312 had just changed this card to a precision side result and left its first open question with only a lower bound. That self-contained question is answered here in part.",
   "bottleneck_link": "Side result on the precision contract of the coded inverse. It bounds what an exact mode-preserving rounder can achieve on this M; it does not show that any caller needs one.",
   "budget_minutes": 90,
-  "stop_rule": "Stop at a rigorous characterisation plus an explicit upper bound, or at one exact counterexample t in L cap int Z outside S. Do not claim R = 1 from search evidence.",
+  "stop_rule": "Stop at a rigorous characterisation plus explicit upper bounds, or at one exact counterexample t in L cap int Z outside S. Do not claim R = 1 from search evidence.",
   "outcome": "partial",
-  "evidence": "PROOF.md Theorems A and B, with verify.py exact checks: L is the Hamming E8 lattice; the genericity rank condition; the tau = 6 basis certificate; 1,864 exact subset-sum witnesses for sampled interior points.",
+  "evidence": "PROOF.md Theorems A, B and C, with verify.py exact checks: L is the Hamming E8 lattice; the genericity rank condition; the tau = 6 basis; the pinned blocks and 2e_j pairs; the exhaustive Hall lemma; 120 exact runs of the Theorem C rounder; 1,864 exact subset-sum witnesses.",
   "author": "apoursh",
   "ai_assistance": "Anthropic Claude (Claude Code) designed the argument, wrote the code and ran the searches under apoursh's direction.",
   "open_questions": [
@@ -80,10 +80,10 @@
       "blocked_by": "Brute force is infeasible (roughly 1e12 lattice points), and the face recursion is not proved."
     },
     {
-      "question": "Can the rigorous bound R <= 6 be lowered, for example to R < 2?",
-      "why_it_matters": "The current bound comes from a generic Beck-Fiala argument, and local search over row bases finds no basis with tau < 6.",
-      "first_step": "Move y to a vertex y* of its fiber polytope, with at most 8 independent fractional rows F. R < 2 follows if every r in L cap Z(F) is a {-1,0,1} combination of rows outside F; enumerate the non-primitive independent F up to symmetry.",
-      "blocked_by": "About C(112,8) candidate sets F before symmetry reduction."
+      "question": "Can R <= 2 be lowered towards 1?",
+      "why_it_matters": "Theorem C loses one unit through the vertex step; an exact stress test of 12,000 inputs reaches 1.998, so the construction itself is tight at 2.",
+      "first_step": "Replace the vertex y* with a fiber point near y, for example by blockwise Beck-Fiala rounding against the 8 mode constraints, then reuse the pair-and-Hall repair.",
+      "blocked_by": "The repair must fit in the remaining error budget per coordinate."
     }
   ]
 }

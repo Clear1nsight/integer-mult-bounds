@@ -17,7 +17,7 @@
         "{package}/verify.py"
       ],
       "timeout_seconds": 60,
-      "checks": "Mode-matrix structure, L = {x : x mod 2 in H8} by HNF, genericity ranks, PR6312 witness relation, tau = 6 basis certificate, 1,864 exact subset-sum witnesses and seven rejection controls."
+      "checks": "Mode-matrix structure, L = {x : x mod 2 in H8} by HNF, genericity ranks, PR6312 witness relation, tau = 6 basis, pinned blocks and 2e_j pairs, exhaustive Hall lemma, 120 exact radius-below-two rounder runs, 1,864 subset-sum witnesses and nine rejection controls."
     },
     {
       "argv": [

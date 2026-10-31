@@ -1,4 +1,4 @@
-# Mode-fiber rounding radius: R = 1 is a finite question, and R ≤ 6
+# Mode-fiber rounding radius: 1 ≤ R ≤ 2, and R = 1 is a finite question
 
 A scoped partial answer to the first open question of Nick Petalas's #6312
 (`research/mode-preserving-rounding`, open at head `46593234`). For the PR4933
@@ -13,14 +13,18 @@ nonempty integer fiber {z ∈ ℤ^112 : Mᵀz = Mᵀx} has a point of that fiber
   in the *open* zonotope Mᵀ(0,1)^112 is a 0/1 subset sum of rows. One interior
   lattice point that is not a subset sum forces R > 1. So **R = 1 is a finite
   decision problem**, and either answer has a finite exact certificate.
-- **Theorem B.** **R ≤ 6.** This is the first explicit upper bound. It uses an 8-row
-  basis of L in which every other row has coordinates of ℓ₁ norm at most 6,
-  plus Beck–Fiala iterative rounding.
+- **Theorem C.** **R ≤ 2.** Each support block is "one pinned coordinate, three
+  free," so every block holds four disjoint row pairs equal to ±2eⱼ for each of
+  its coordinates. Rounding at a vertex of the fiber polytope leaves a small
+  lattice residual. A Hall-theorem block assignment then pays that residual with
+  intact pairs, moving every coordinate by less than 2. `rounder.py` runs the
+  construction exactly. Theorem B, a simpler basis certificate with Beck–Fiala
+  rounding, gives R ≤ 6.
 - **Evidence, not proof.** All 1,864 sampled interior lattice points near vertices
   and faces (face rank 0–7) are subset sums. This supports the conjecture R = 1.
 
-[PROOF.md](PROOF.md) has the arguments and exact scope. The basis is in
-[CERTIFICATE.json](CERTIFICATE.json), the witnesses in [SEARCH.json](SEARCH.json),
+[PROOF.md](PROOF.md) has the arguments and exact scope. The constructive rounder is
+[rounder.py](rounder.py), the basis is in [CERTIFICATE.json](CERTIFICATE.json), the witnesses in [SEARCH.json](SEARCH.json),
 and the pins in [SOURCES.json](SOURCES.json). Complete κ and the selected frontier
 are unchanged. This is a property of the exact-mode contract. It does not claim
 that any caller needs the contract, and supplies no physical rounder or error/tape bill.
@@ -35,13 +39,20 @@ python3 -I -O -W error -B research/mode-fiber-radius-bounds/verify.py
 python3.12 -B scripts/research_package.py --package research/mode-fiber-radius-bounds
 ```
 
-Each prints `PASS_MODE_FIBER_RADIUS_BOUNDS` in about a second. It checks the
-structure facts, the HNF lattice identity, the rank condition Theorem A needs,
-the #6312 witness relation, the τ = 6 basis (|det| = 16, integral coordinates,
-maximum ℓ₁ norm exactly 6) and every subset-sum witness exactly. It also checks
-seven rejection controls: a flipped matrix entry, a repeated basis row, a claimed
-τ = 5, a non-basis, a wrong witness mask, an off-lattice target and a broken
-witness relation. Interiority of the sampled targets came from a floating-point
+Each prints `PASS_MODE_FIBER_RADIUS_BOUNDS` in about five seconds. Checked exactly:
+
+- the structure facts, the HNF lattice identity and the rank condition Theorem A needs;
+- the #6312 witness relation;
+- the τ = 6 basis (|det| = 16, integral coordinates, maximum ℓ₁ norm exactly 6);
+- the 14 pinned blocks and their 2eⱼ pairs;
+- the Hall lemma, exhaustively over every set of at most three damaged blocks (minimum slack 3);
+- 120 exact runs of the Theorem C rounder (worst error 279/140);
+- every subset-sum witness.
+
+Nine rejection controls fail closed: a flipped matrix entry (in both the
+structure and block checks), a repeated basis row, a claimed τ = 5, a non-basis,
+a wrong witness mask, an off-lattice target, a broken witness relation and
+non-integral modes passed to the rounder. Interiority of the sampled targets came from a floating-point
 LP and is not certified.
 
 The non-certifying search scripts in `search/` need numpy and scipy:
@@ -56,12 +67,13 @@ each), and `basis_search.py SEED RESTARTS` repeats the basis search.
    a face recursion, where deep points are handled by discrepancy rounding and
    points near a face reduce to the rows in that flat. Blocker: about 10¹²
    lattice points rule out brute force, and the recursion is unproved.
-2. **Lower the bound below 6.** Local search finds no basis with τ < 6, so this
-   method is exhausted. First step: move y to a vertex of its fiber polytope, with
-   at most 8 independent fractional rows F. Then R < 2 follows if every lattice
-   point of the zonotope of F is a {−1,0,1} combination of the other rows.
-   Check this over non-primitive F up to symmetry. Blocker: about C(112,8) sets F
-   before reduction.
+2. **Close the gap between 1 and 2.** Theorem C loses a full unit through the
+   triangle inequality |z − y| ≤ |z − y*| + |y* − y|. An exact stress run of
+   12,000 inputs reaches 1.998 with this construction, so improving the bound needs
+   a different first step. First step: replace the vertex y* by a point of the
+   fiber chosen near y, for example by Beck–Fiala rounding inside each block
+   against the 8 mode constraints. Then reuse the pair-and-Hall repair.
+   Blocker: the repair must stay within the remaining error budget.
 
 ## Credit
 

@@ -9,8 +9,14 @@ Prepared for apoursh with substantial Anthropic Claude assistance. Apache-2.0.
 """
 from fractions import Fraction as Q
 import hashlib
+import itertools
 import json
 from pathlib import Path
+import random
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import rounder  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -171,6 +177,49 @@ def check_search(rows, code, search):
     return len(search['records']), dict(sorted(faces.items()))
 
 
+def check_blocks(rows):
+    """Theorem C finite inputs: pinned blocks, four signed 2e_j pairs per (block, j), and the Hall lemma."""
+    blocks = rounder.blocks_of(rows)
+    for s, block in blocks.items():
+        for j in s:
+            pairs = rounder.pairs_for(rows, block, j)
+            need(len({i for _, a, b in pairs for i in (a, b)}) == 8, 'pairs are disjoint')
+            for kind, a, b in pairs:
+                combo = [x + y if kind == 'sum' else x - y for x, y in zip(rows[a], rows[b])]
+                need(combo[j] in (2, -2) and all(combo[k] == 0 for k in range(8) if k != j), 'pair gives 2e_j')
+    supports = list(blocks)
+    slack = min(sum(1 for s in supports if s not in bad and set(s) & set(J)) - len(J)
+                for k in range(4) for bad in itertools.combinations(supports, k)
+                for size in range(1, 9) for J in itertools.combinations(range(8), size))
+    need(slack >= 0, 'Hall lemma for at most three damaged blocks')
+    return blocks, slack
+
+
+def fixtures(rows, count, seed=20261031):
+    """Exact y in [0,1)^112 with M^T y in L: the PR6312 witness, then projected random rationals."""
+    rng = random.Random(seed)
+    witness = [Q(1, 2) if i in WITNESS_SUPPORT else Q(0) for i in range(112)]
+    yield witness
+    for n in range(count - 1):
+        den = rng.choice([2, 3, 4, 5, 6, 7, 12, 30])
+        v = [Q(rng.randint(-3 * den, 3 * den), den) for _ in range(112)]
+        if n % 3:
+            keep = set(rng.sample(range(112), rng.randint(4, 20)))
+            v = [x if i in keep else Q(0) for i, x in enumerate(v)]
+        mt = [sum(rows[i][j] * v[i] for i in range(112)) for j in range(8)]
+        w = [v[i] - sum(rows[i][j] * mt[j] for j in range(8)) / 56 for i in range(112)]
+        yield [x - (x.numerator // x.denominator) for x in w]
+
+
+def check_rounder(rows, blocks, count=120):
+    worst = Q(0)
+    for y in fixtures(rows, count):
+        _, err = rounder.round_within_two(rows, y, blocks)
+        worst = max(worst, err)
+    need(worst < 2, 'every fixture rounded within radius two')
+    return count, worst
+
+
 def rejects(function, *args):
     try:
         function(*args)
@@ -196,6 +245,8 @@ def controls(rows, code, certificate, search):
         rejects(check_search, rows, code, wrong_sum),
         rejects(check_search, rows, code, off_lattice),
         rejects(check_witness, rows[:48] + [rows[49]] + rows[49:]),
+        rejects(rounder.blocks_of, [tuple(r) for r in flipped]),
+        rejects(rounder.round_within_two, rows, [Q(1, 2)] + [Q(0)] * 111),
     ]
     need(all(results), 'every rejection control must fail closed: %s' % results)
     return len(results)
@@ -207,16 +258,20 @@ def main():
     check_witness(rows)
     certificate = json.loads(read(HERE / 'CERTIFICATE.json'))
     tau = check_basis(rows, certificate)
+    blocks, slack = check_blocks(rows)
+    rounded, worst = check_rounder(rows, blocks)
     search = json.loads(read(HERE / 'SEARCH.json'))
     count, faces = check_search(rows, code, search)
     n_controls = controls(rows, code, certificate, search)
     print(json.dumps({
         'lattice': 'L = M^T Z^112 = {x in Z^8 : x mod 2 in H8}, index 16',
         'rows_negation_closed': negation_closed,
-        'lower_bound': 1, 'upper_bound': tau,
+        'lower_bound': 1, 'basis_upper_bound_theorem_B': tau, 'upper_bound_theorem_C': 2,
+        'pinned_blocks': len(blocks), 'hall_min_slack_three_damaged': slack,
+        'rounder_fixtures': rounded, 'rounder_worst_error': str(worst),
         'subset_sum_witnesses': count, 'witnesses_by_face_rank': faces,
         'rejection_controls': n_controls,
-        'scope': 'Exact finite checks only; the reduction and Beck-Fiala arguments are in PROOF.md. '
+        'scope': 'Exact finite checks only; the reduction, Beck-Fiala and radius-two arguments are in PROOF.md. '
                  'Interiority of search targets is not certified.'}, indent=1))
     print('PASS_MODE_FIBER_RADIUS_BOUNDS')
 
