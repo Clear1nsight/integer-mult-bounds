@@ -1,4 +1,4 @@
-# Inventory-local SHA reuse: reviewed source proposal
+# Inventory-local SHA reuse: source and scoped execution evidence
 
 This source proposal changes one repeated SHA-256 calculation in the original
 H25 file inventory. After the original pin lookup, the candidate calculates the
@@ -7,12 +7,47 @@ pin comparison and returned metadata. Every file read, traversal, pin check,
 mode/stat check and inventory completeness check remains in place. The original
 `need`, `sha` and `inventory` functions remain as a literal independent reference.
 
-Status at this source publication: F1, F2 and F4 have independent **source-only**
-acceptance for the narrow inventory component. No target was imported, executed,
-tested, compiled or measured during publication preparation. Runtime correctness,
-normal/-O controls, resource suitability and performance remain unobserved in this
-source snapshot. A later executed-evidence commit must retain this distinction.
-No speedup or original-goal completion is claimed.
+The parent completed the fixed six-process schedule once, and independent
+retained-evidence review accepted **54 normal/-O control rows** and the narrow
+inventory F7 comparison. All four comparison outputs were byte-identical to the
+independently derived 32-entry expected inventory. The two complete candidate
+outer observations totaled **2.44 s wall / 2.41 s CPU**, versus **2.77 s wall /
+2.74 s CPU** for the two baseline observations: 0.33 s lower in each metric,
+about **11.91% wall / 12.04% CPU**, on this fixed host/workload/schedule only.
+Two samples per arm do not establish significance or repeatable magnitude.
+No memory-saving, whole-caller/H25 or original-goal completion claim follows.
+
+| Fixed order | Wall seconds | User seconds | System seconds | GNU max RSS KiB |
+|---|---:|---:|---:|---:|
+| normal controls | 0.55 | 0.43 | 0.07 | 22056 |
+| optimized controls | 0.64 | 0.57 | 0.07 | 24796 |
+| baseline-1 | 1.48 | 1.28 | 0.17 | 21996 |
+| candidate-1 | 1.25 | 1.07 | 0.15 | 21756 |
+| candidate-2 | 1.19 | 1.02 | 0.17 | 22092 |
+| baseline-2 | 1.29 | 1.12 | 0.17 | 22064 |
+
+All first observations and empty stderr files are retained; no admitted operation
+failed or was rerolled. BOUNDARY-01 was a rejected source proposal before
+execution, preserved with its reviewed additive repair. The six outer times sum
+to 6.40 s wall and 6.29 s CPU; the ledger charged an 18.46 s policy increment,
+reaching 94.210533479 s including its prior checkpoint. Policy administrative
+charges are not physical timing measurements. The candidate's maximum GNU RSS
+(22092 KiB) exceeds the baseline maximum (22064 KiB); no RSS saving is inferred.
+
+See [PUBLIC-OUTCOME.json](PUBLIC-OUTCOME.json), the [control review](validation/controls/CONTROL-OUTCOME-REVIEW-v1.json),
+the [comparison review](validation/comparison/COMPARISON-OUTCOME-REVIEW-v1.json),
+and [EVIDENCE-NOTES.md](EVIDENCE-NOTES.md) for boundaries, raw-record locations and
+reproduction requirements. `TREE-SOURCE-v1.json` remains the unchanged historical
+source receipt; `TREE-EVIDENCE-v2.json` retains the evidence-authoring snapshot before the
+README next-question correction; `TREE-EVIDENCE-v3.json` inventories the current
+documentation-consistent revision. The
+initial 60-file source commit is `876626e3cacf05b8a6cc3795734b08254b08c4b7`
+in [PR6328](https://github.com/CrocSwap/integer-mult-bounds/pull/6328). Final evidence
+commit remote/head/CI/handoff verification is a separate parent obligation.
+
+The original source contract and prospective bill below remain applicable. The
+publication preparer performed only file copying, text/JSON/AST inspection and
+metadata hashing; the parent performed the admitted target execution.
 
 ## Retained source and provenance
 
@@ -126,11 +161,15 @@ publication ancestry or current upstream state.
 
 ## Open next questions
 
-The structured questions are in `OPEN-QUESTIONS.json`.
+`OPEN-QUESTIONS.json` preserves the exact historical source-stage questions.
+Its first source-stage admission/execution blockers were resolved for this fixed
+host/workload by the retained control and comparison reviews. Active next steps
+remain separately bounded:
 
-- Can the exact fixed inventory bill show a bounded gain once all declared outer
-  costs are paid? Start with independent parent guard/runtime admission and the
-  fixed six-process schedule; executed evidence and resource admission block it.
+- Does the observed reduction recur under a fresh admitted reproduction, or
+  extend to another declared workload? Start with a new independently reviewed
+  host/path/runtime/source/resource bill and fixed observation schedule; this
+  two-sample-per-arm result establishes no significance or generalization.
 - Would contributors review a broader ordered-observation reuse contract? Start
   with one source-pinned observer, its literal reference and invalidation cases;
   contributor agreement and a separate authorization/gate are required. This PR
@@ -140,10 +179,10 @@ The structured questions are in `OPEN-QUESTIONS.json`.
   checkpoints; the unresolved original invoice and broader source contracts
   remain blockers.
 
-## Adding executed evidence later
+## Retaining execution evidence and future reproduction
 
 Keep `component/`, `workspace/`, `reviews/`, and `SOURCES-EXPORT.json` unchanged
-for this accepted source identity. The parent may append separately admitted
+for this accepted source identity. This revision appends separately admitted
 runner/runtime/source reviews and exact operation receipts under new
 `execution-source/` and `evidence/` paths outside `component/`; the consumer has
 an exact component-file census. Retain failures, raw outputs, source/runtime and
@@ -154,6 +193,8 @@ and publish the execution evidence as a separate incremental commit. If any
 accepted component/external byte or mode changes, obtain fresh affected source
 acceptance and execution evidence instead of rebinding old receipts.
 
-Source preparation does not create a Git commit, publish a PR, verify remote
-blobs/head, certify hosted replay or establish scientific correctness. The parent
-owns those steps, exact-head CI/readbacks and the contributor-facing handoff.
+The original source publication and this appended evidence have separate identity
+and publication checkpoints. Local package preparation does not verify the final
+remote blobs/head or hosted replay. The parent owns final commit publication,
+exact-head CI/readbacks and the contributor-facing handoff; these steps do not
+establish scientific correctness.
