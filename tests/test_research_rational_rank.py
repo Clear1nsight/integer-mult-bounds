@@ -34,6 +34,18 @@ def oracle(a):
 
 
 class RankTests(unittest.TestCase):
+    def test_integer_products_keep_rational_and_empty_boundaries(self):
+        a=[[Q(1,2),Q(-2,3)],[Q(5,7),Q(11,13)]]
+        b=[[Q(3,17)],[Q(-19,23)]]
+        c=[[sum((x*y[0] for x,y in zip(row,b)),Q(0))] for row in a]
+        self.assertTrue(tool._product_equal(a,b,c,2,2,1))
+        c[1][0]+=Q(1,1009)
+        self.assertFalse(tool._product_equal(a,b,c,2,2,1))
+        self.assertTrue(tool._product_equal([[],[]],[],[[Q(0)],[Q(0)]],2,0,1))
+        self.assertFalse(tool._product_equal([[],[]],[],[[Q(0)],[Q(1)]],2,0,1))
+        self.assertTrue(tool._product_equal([],[[Q(1)]],[],0,1,1))
+        self.assertTrue(tool._product_equal(a,[[],[]],[[],[]],2,2,0))
+
     def test_all_binary_three_by_three_matrices(self):
         for values in itertools.product(range(2),repeat=9):
             a=[list(values[i:i+3]) for i in (0,3,6)];r=tool.certify(problem(a))

@@ -9,10 +9,14 @@ import argparse
 from fractions import Fraction as Q
 from hashlib import sha256
 import json
+from math import lcm
 from pathlib import Path
 import re
 import sys
 from compare_recursive_invoices import _pairs, _integer, _not_integer, require
+
+
+MAX_PRODUCT_SCALE_BITS = 16384
 
 
 def rational(x):
@@ -94,6 +98,38 @@ def certify(value):
     verify(value,result);return result
 
 
+def _scaled_rows(rows):
+    """Clear row denominators, or decline excessive common-denominator growth."""
+    result=[]
+    for row in rows:
+        denominator=1
+        for x in row:
+            denominator=lcm(denominator,x.denominator)
+            if denominator.bit_length()>MAX_PRODUCT_SCALE_BITS:return None
+        result.append(([x.numerator*(denominator//x.denominator) for x in row],denominator))
+    return result
+
+
+def _product_equal(a,b,c,m,k,n):
+    """Test A B = C using exact integer dot products after row/column scaling.
+
+    Shapes have already been checked at the certificate boundary. Explicit
+    dimensions preserve empty factors and zero-dimensional kernels.
+    """
+    left=_scaled_rows(a)
+    right=_scaled_rows([[b[i][j] for i in range(k)] for j in range(n)])
+    if left is None or right is None:
+        return all(sum((a[i][t]*b[t][j] for t in range(k)),Q(0))==c[i][j]
+                   for i in range(m) for j in range(n))
+    for i in range(m):
+        row,rd=left[i]
+        for j in range(n):
+            column,cd=right[j];target=c[i][j]
+            numerator=sum(x*y for x,y in zip(row,column))
+            if numerator*target.denominator != target.numerator*rd*cd:return False
+    return True
+
+
 def verify(value,result):
     """Check the factorization, minor inverse and complete kernel bases by products."""
     a=validate(value);m,n=len(a),len(a[0])
@@ -104,22 +140,20 @@ def verify(value,result):
         require(type(indices) is list and len(indices)==r and len(set(indices))==r
                 and all(type(i) is int and 0<=i<bound for i in indices),'Invalid pivot indices')
     inv=matrix(result.get('minor_inverse'),r,r);c=matrix(result.get('coefficients'),r,n)
-    for i in range(r):
-        for j in range(r):
-            require(sum((a[rows[i]][cols[k]]*inv[k][j] for k in range(r)),Q(0))==Q(i==j),
-                    'Pivot minor inverse is false')
-    for i in range(m):
-        for j in range(n):
-            require(sum((a[i][cols[k]]*c[k][j] for k in range(r)),Q(0))==a[i][j],
-                    'Rank factorization is false')
+    minor=[[a[i][j] for j in cols] for i in rows]
+    require(_product_equal(minor,inv,[[Q(i==j) for j in range(r)] for i in range(r)],r,r,r),
+            'Pivot minor inverse is false')
+    require(_product_equal([[a[i][j] for j in cols] for i in range(m)],c,a,m,r,n),
+            'Rank factorization is false')
     right=matrix(result.get('right_kernel'),n-r,n);left=matrix(result.get('left_kernel'),m-r,m)
     free_columns=[j for j in range(n) if j not in cols];free_rows=[i for i in range(m) if i not in rows]
     for index,v in enumerate(right):
         require(all(v[j]==Q(k==index) for k,j in enumerate(free_columns)), 'Right basis lacks free-coordinate identity')
-        require(all(sum((x*y for x,y in zip(row,v)),Q(0))==0 for row in a), 'False right kernel')
     for index,v in enumerate(left):
         require(all(v[i]==Q(k==index) for k,i in enumerate(free_rows)), 'Left basis lacks free-coordinate identity')
-        require(all(sum((v[i]*a[i][j] for i in range(m)),Q(0))==0 for j in range(n)), 'False left kernel')
+    require(_product_equal(a,[[v[j] for v in right] for j in range(n)],
+                          [[Q(0)]*(n-r) for _ in range(m)],m,n,n-r),'False right kernel')
+    require(_product_equal(left,a,[[Q(0)]*n for _ in range(m-r)],m-r,m,n),'False left kernel')
     return True
 
 

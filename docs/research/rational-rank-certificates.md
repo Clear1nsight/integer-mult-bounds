@@ -27,6 +27,14 @@ nonpivot rows. The producer uses elimination; the checker only uses products,
 coordinate identities and the rank factorization. Empty kernels and rank zero
 have explicit valid certificates.
 
+The product checker clears row and column denominators and compares exact
+integer dot products. If a common denominator exceeds 16384 bits, it uses
+the original Fraction predicate for that product. Certificate contents and
+acceptance conditions are unchanged. The
+[implementation proof and complete-CLI benchmark](../../research/integer-rank-product-checks/README.md)
+retain the original interface and credit; the integer-product implementation
+was produced by Nick Petalas.
+
 The CLI binds the exact problem bytes by SHA-256. It accepts integers and
 rational strings, rejects duplicate JSON keys and floats, and uses the Python
 standard library. Limits are 64 rows and columns, input numerator/denominator

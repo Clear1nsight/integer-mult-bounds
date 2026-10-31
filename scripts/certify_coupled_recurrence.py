@@ -69,6 +69,8 @@ def certify(value):
                       'witness': list(map(encode_rational,v))}
             verify(value,result); return result
         for i in range(k+1,n):
+            if rows[i][k] == 0:
+                continue
             factor = rows[i][k]/rows[k][k]
             for j in range(k,n+2): rows[i][j] -= factor*rows[k][j]
     w = backsolve(rows,[row[n] for row in rows],n)
