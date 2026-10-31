@@ -1,0 +1,138 @@
+{
+  "files": {
+    "PUBLICATION-SCOPE.json": {
+      "bytes": 633,
+      "sha256": "ddc1ec8ba5447f3b5fbdf040943156a99a32b1f3a68d75a312aac26fb8f60cf0"
+    },
+    "README.md": {
+      "bytes": 5089,
+      "sha256": "4a5fb2dab1358a816546bdedba17eabecb8d0577fbdaa773e711774235f33b43"
+    },
+    "component/BILL.json": {
+      "bytes": 5749,
+      "sha256": "1e771384c2dc404a7aafae91d578b3445921701ac80d7361404ec879873fac06"
+    },
+    "component/CONTROL-SPEC.json": {
+      "bytes": 3062,
+      "sha256": "f6355b4469a28507d1743f37f30177c9bc6c71f1bd1e9cebd8b15b19c637d423"
+    },
+    "component/FEASIBILITY.json": {
+      "bytes": 3071,
+      "sha256": "f9ff50549bae4071fb7531fe6ad2e53d2b593b8508d42dce6194ea7c3e012a61"
+    },
+    "component/ORIGINAL-SOURCE-PINS.json": {
+      "bytes": 3032,
+      "sha256": "5d24c8b59e3843313a3b78b7ee7ab5f99ba4aa4ff7dac5b5a576679ee8e12930"
+    },
+    "component/README.md": {
+      "bytes": 5158,
+      "sha256": "c74cc98f237a4ed97c77ec77555322b496c5e8a5f7544864dc55b584cc19a104"
+    },
+    "component/REFERENCE-EXTRACTION.json": {
+      "bytes": 2031,
+      "sha256": "bfb4c0f8e883a0ecb5584b2ced8be6be92f491fa75feaebcf7e48955a652dd01"
+    },
+    "component/SOURCE-PINS.json": {
+      "bytes": 3914,
+      "sha256": "5cbf632753d81558487f453e2ac9b92a02a0b26c0f6da59b28c71c6db415ae1e"
+    },
+    "component/bounded_serialization.py": {
+      "bytes": 23560,
+      "sha256": "4edd0ae36b0fe98fe99d8658391a52568cc59888f1ae11e69cbb01f9544c74cb"
+    },
+    "component/component_consumer.py": {
+      "bytes": 6761,
+      "sha256": "360ee7838c00d4e07908e4a7343091397a5902660aead9f0a9f25c2e708242b1"
+    },
+    "component/docs/API-v2.md": {
+      "bytes": 6025,
+      "sha256": "c8ed5f3aa87b433a5ea569622acef4f05d29dbfb7543e3b65d035d27da98fd87"
+    },
+    "component/docs/API-v3.md": {
+      "bytes": 2421,
+      "sha256": "44f42b8f1575effc7f41ca76e914f0d32e71e45464f302f117d935f4aa27dcd6"
+    },
+    "component/docs/CONTRACT-v2.json": {
+      "bytes": 2962,
+      "sha256": "10d011cf62573f4a2b5be30af1272c5fb94092fbaddc339a5ebd3a4c584e52e5"
+    },
+    "component/docs/COST-CONTROLS.json": {
+      "bytes": 11322,
+      "sha256": "72e9e72f1df1aa9f96199e29631c4e84f9eaffe41b0996309f13a349e9f30c00"
+    },
+    "component/docs/SOURCE-READINESS-v3.json": {
+      "bytes": 773,
+      "sha256": "6f9cace23d2110d285402a8e883f6e5499c052dad6a9bff31a06a2ba4c25dbe5"
+    },
+    "component/provenance/PROPOSAL.json": {
+      "bytes": 7466,
+      "sha256": "9bf3f21b0b2c3db755495e5b6c4ba1b6a76e18f43f8fc1563ae31a808a1ea0ee"
+    },
+    "component/provenance/REVIEW-v3.json": {
+      "bytes": 7162,
+      "sha256": "9f7c7f5abcdb8c8421b82a51020afef3969ad1e2fccb4f1bbcb8484380415555"
+    },
+    "component/provenance/SOURCE-DESIGN.md": {
+      "bytes": 5465,
+      "sha256": "0a12cb7945e4bb772154346c61a202b9f44e7297800306ef9ce113373af77578"
+    },
+    "component/provenance/compare_side_verifier.py": {
+      "bytes": 10571,
+      "sha256": "6e507bb0c7e00d090a60289fddb6c55e90c946d0850c42c3c5e3e15c27604a68"
+    },
+    "component/provenance/native_backend.py": {
+      "bytes": 20334,
+      "sha256": "e473c38245c3668715b5a78dfe980b2fe3ed0d0c9b8c97c666fbae6ecf1fffd5"
+    },
+    "component/provenance/profile_side_verifier.py": {
+      "bytes": 8959,
+      "sha256": "9c994378171c20a91539418d93cb8387e1daa93465d6862beefea90e12999c2a"
+    },
+    "component/reference.py": {
+      "bytes": 2141,
+      "sha256": "38ce1228661156cfbbc908515efd2eee59eff69d887d5e771a83f04ff8812968"
+    },
+    "component/serialization_controls.py": {
+      "bytes": 23684,
+      "sha256": "72951102beea04abeed35011c82f4518e886dff921e0e515025ae0e1e61f9e09"
+    },
+    "reviews/ACCEPTANCE-CHECKLIST-v1.md": {
+      "bytes": 8241,
+      "sha256": "1e1c5061fc92325b0fc09b7a0f2f3c0b2e9e9e6b6eaafa6630fb172e608dbf37"
+    },
+    "reviews/F1-REVIEW-v1.json": {
+      "bytes": 4161,
+      "sha256": "5af6f4c4e17be4c64d4897a9a6cef63d7bfe95d8846419d9ee66fbc8e3d2750a"
+    },
+    "reviews/F2-REVIEW-v1.json": {
+      "bytes": 4666,
+      "sha256": "6a26b3a29132cb2ef1af67d270c5d7aa2a021ac53583f0129e1fcdce9ea61361"
+    },
+    "reviews/F4-REVIEW-v1.json": {
+      "bytes": 4439,
+      "sha256": "856e5f2b7af1fd28fe047657c3f2fd994cc59ab3c5a1549e82f55ab706c8eb3d"
+    },
+    "reviews/FROZEN-PACKAGE-CHECK-v1.json": {
+      "bytes": 4124,
+      "sha256": "3f1271d0a14eac1e65c835f96b9c939ae4eb02cdd404239e19d48d50ce630ff2"
+    },
+    "reviews/PARENT-ROUTE-ASSESSMENT-v1.json": {
+      "bytes": 3279,
+      "sha256": "e93782a30ad5f4aaa98e1ea0dff225082b415a26554ed7ac644a0593a02f92ca"
+    },
+    "reviews/PRELIMINARY-SOURCE-CHECK-v1.json": {
+      "bytes": 2168,
+      "sha256": "7ff6296d0b7801028a35581bb3ec946f0d52a4edcffd9202a5919f4c96e21f65"
+    },
+    "reviews/REVIEW-FREEZE-v1.json": {
+      "bytes": 2477,
+      "sha256": "71ceb35c4b2d8956742cdeaa5f98c00d7eba0c0d164a0d4ed5867c8462e79f47"
+    },
+    "reviews/SOURCE-CLOSURE-v1.json": {
+      "bytes": 7993,
+      "sha256": "b066021ebdd16e4e146deb0af732c1257e87c96b41a56da75a87ac2204848033"
+    }
+  },
+  "schema": "h25-publication-checksums-v1",
+  "self_hash_external": true
+}
