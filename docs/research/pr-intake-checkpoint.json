@@ -1821,31 +1821,24 @@
     "all_jobs_finished": true
   },
   "latest_delta_intake": {
-    "date": "2026-10-30",
-    "status": "published; ending snapshot has zero actionable",
-    "new_heads_reviewed": 52,
-    "archives_merged": 49,
-    "reviewed_tooling_merged": 1,
+    "date": "2026-10-31",
+    "status": "published; zero actionable at ending snapshot",
+    "new_heads_reviewed": 78,
+    "archives_merged": 75,
+    "reviewed_tooling_merged": 2,
     "new_revision_holds": [
-      6204,
-      6216
+      6319
     ],
-    "superseded_predecessor": 2477,
-    "successor": 6237,
     "evidence": [
-      "docs/research/pr-intake-evidence/queue-oct30a-20261030.json",
-      "docs/research/pr-intake-evidence/queue-oct30b-20261030.json"
+      "docs/research/pr-intake-evidence/queue-oct31a-20261031.json"
     ],
     "closures": [
-      "docs/research/pr-intake-evidence/queue-oct30a-closures.json",
-      "docs/research/pr-intake-evidence/queue-oct30b-closures.json"
+      "docs/research/pr-intake-evidence/queue-oct31a-closures.json"
     ],
-    "snapshot": "docs/research/pr-intake-evidence/queue-oct30-ending.json",
+    "snapshot": "docs/research/pr-intake-evidence/queue-oct31-ending.json",
     "selected_kappa": "0.003125804",
     "selected_frontier_changed": false,
     "live_jobs": [],
-    "next": "Use delta-only intake. PR6214 adds author-reported independent replay for archived PR6167 kappa .003128645; selected admission remains open. Reuse old evidence and unchanged holds. Check ancestor PR closures before multi-parent publication.",
-    "source_only_copy": 6242,
-    "source_branch": "archive/pr-6242-source"
+    "next": "Use delta-only intake. PR6245/6249 add independent outer/compiler numerical audit submissions for archived PR6167, not selected admission. PR6293/6298 state scoped phase obligations, not a refutation of the conditional selected result. PR6319 held on exact-path and Git-root false-clean counterexamples; do not install its proposed mandatory intake guard until fixed."
   }
 }
